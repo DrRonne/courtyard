@@ -14,10 +14,30 @@ export default class Game extends Component {
             }
             farmgrid.push(row);
         }
-        farmgrid[8][8] = "Field";
-        farmgrid[6][8] = "Field";
-        farmgrid[6][6] = "Field";
-        farmgrid[8][6] = "Field";
+        farmgrid[8][8] = {
+            type: "Field",
+            seed: "Asparagus",
+            planted: (Date.now() / 1000),
+            fertilized: false
+        };
+        farmgrid[6][8] = {
+            type: "Field",
+            seed: "Asparagus",
+            planted: (Date.now() / 1000) - 23040,
+            fertilized: false
+        };
+        farmgrid[6][6] = {
+            type: "Field",
+            seed: "Asparagus",
+            planted: (Date.now() / 1000) - 46080,
+            fertilized: false
+        };
+        farmgrid[8][6] = {
+            type: "Field",
+            seed: "Asparagus",
+            planted: (Date.now() / 1000) - 74880,
+            fertilized: false
+        };
         return {
             "farm-name": "test farm",
             "farm-width": 100,

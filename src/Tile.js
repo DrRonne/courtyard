@@ -7,7 +7,7 @@ export default class Tile extends Component {
         let tile_action;
         if (this.props.tiledata)
         {
-            tile_action = <Field width={2} height={2} imgwidth={75} imgheight={38} seed={"Asparagus"} planted={0} />;
+            tile_action = <Field width={2} height={2} seed={this.props.tiledata.seed} planted={this.props.tiledata.planted} />;
         }
         const styles = { 
             transform: `translate(${this.props.tiley*34 - this.props.tilex*103}px, ${-this.props.tiley*26 + this.props.tilex*17}px)`,
