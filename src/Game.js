@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import TileGrid from './TileGrid.js'
 import Menu from './Menu/Menu.js'
+import Topbar from './Topbar/Topbar.js'
 
 export default class Game extends Component {
 
@@ -67,6 +68,7 @@ export default class Game extends Component {
                 <div style={tilegrid_container_styles}>
                     <TileGrid farmheight={20} farmwidth={20} farmgrid={this.getGameData()["farm-grid"]} />
                 </div>
+                <Topbar />
                 <Menu />
             </div>
         )
