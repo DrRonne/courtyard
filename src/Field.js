@@ -59,7 +59,6 @@ export default class Field extends TileEntity {
                     // Correctly scale and transform the image so it fits in the field
                     const copystate = {...this.state};
                     copystate.renderHeight = this.calcRenderHeight(this.imgElement.current.naturalHeight, this.imgElement.current.naturalWidth);
-                    console.log(this.imgElement.current.naturalHeight, copystate.renderHeight);
                     copystate.renderWidth = this.calcRenderWidth(this.props.width);
                     copystate.horizontalDisplacement = this.calcHorizontalDisplacement(this.props.width, copystate.renderWidth);
                     copystate.verticalDisplacement = this.calcVerticalDisplacement(copystate.renderHeight);
