@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import TileGrid from './TileGrid.js'
+import Menu from './Menu/Menu.js'
 
 export default class Game extends Component {
 
@@ -47,9 +48,26 @@ export default class Game extends Component {
     }
 
     render() {
+        const game_bg_styles = {
+            background: '#43a143',
+            width: 1280,
+            height: 720,
+            display: 'block',
+            marginLeft: 'auto',
+            marginRight: 'auto',
+            position: 'relative',
+        }
+        const tilegrid_container_styles = {
+            overflow: 'hidden',
+            width: 1280,
+            height: 720,
+        }
         return (
-            <div>
-                <TileGrid farmheight={10} farmwidth={10} farmgrid={this.getGameData()["farm-grid"]} />
+            <div style={game_bg_styles}>
+                <div style={tilegrid_container_styles}>
+                    <TileGrid farmheight={10} farmwidth={10} farmgrid={this.getGameData()["farm-grid"]} />
+                </div>
+                <Menu />
             </div>
         )
     }
