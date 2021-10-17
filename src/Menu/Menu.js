@@ -23,7 +23,7 @@ export default class Menu extends Component {
                                 <Friends />
                             </td>
                             <td>
-                                <Tools />
+                                <Tools hoeClick={() => this.props.hoeClick()} multiClick={() => this.props.multiClick()} />
                             </td>
                         </tr>
                     </tbody>

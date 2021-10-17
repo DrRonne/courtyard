@@ -1,44 +1,58 @@
 import React from 'react'
 import TileEntity from './TileEntity';
 
+
 export default class Field extends TileEntity {
     constructor(props) {
         super(props);
         this.imgElement = React.createRef();
         this.state = {
             ...this.state,
-            imgPath: null,
+            imgPath: this.props.plown ? "/assets/plown_plot.png" : "/assets/fallow_plot.png",
             seed: this.props.seed,
             planted: this.props.planted,
             seed_data: null,
+            plown: this.props.plown,
         };
         // THIS IS DATA THAT SHOULD BE RETRIEVED FROM SOME API
-        fetch(`/assets/seeds/${this.props.seed}/${this.props.seed}_properties.json`)
-            .then((r) => r.json())
-            .then((data) =>{
-                this.state.seed_data = data;
-                this.updateSeedImage();
-            });        
+        if (this.state.seed) {
+            fetch(`/assets/seeds/${this.props.seed}/${this.props.seed}_properties.json`)
+                .then((r) => r.json())
+                .then((data) =>{
+                    this.state.seed_data = data;
+                    this.updateSeedImage();
+                });
+        }
     }
 
     updateSeedImage() {
-        const time_planted = (Date.now() / 1000) - this.state.planted;
-        const percentage = time_planted / this.state.seed_data.time;
         let newimg;
-        if (percentage > 1.2) {
-            newimg = "/assets/seeds/" + this.state.seed + "/" + this.state.seed + "_withered.png";
-        }
-        else if (percentage > 1) {
-            newimg = "/assets/seeds/" + this.state.seed + "/" + this.state.seed + "_3.png";
-        }
-        else if (percentage > 0.66) {
-            newimg = "/assets/seeds/" + this.state.seed + "/" + this.state.seed + "_2.png";
-        }
-        else if (percentage > 0.33) {
-            newimg = "/assets/seeds/" + this.state.seed + "/" + this.state.seed + "_1.png";
+        if (this.state.seed) {
+            const time_planted = (Date.now() / 1000) - this.state.planted;
+            const percentage = time_planted / this.state.seed_data.time;
+            if (percentage > 1.2) {
+                newimg = "/assets/seeds/" + this.state.seed + "/" + this.state.seed + "_withered.png";
+            }
+            else if (percentage > 1) {
+                newimg = "/assets/seeds/" + this.state.seed + "/" + this.state.seed + "_3.png";
+            }
+            else if (percentage > 0.66) {
+                newimg = "/assets/seeds/" + this.state.seed + "/" + this.state.seed + "_2.png";
+            }
+            else if (percentage > 0.33) {
+                newimg = "/assets/seeds/" + this.state.seed + "/" + this.state.seed + "_1.png";
+            }
+            else {
+                newimg = "/assets/seeds/" + this.state.seed + "/" + this.state.seed + "_0.png";
+            }
         }
         else {
-            newimg = "/assets/seeds/" + this.state.seed + "/" + this.state.seed + "_0.png";
+            if (this.state.plown) {
+                newimg = "/assets/plown_plot.png";
+            }
+            else {
+                newimg = "/assets/fallow_plot.png";
+            }
         }
         const copystate = {...this.state};
         copystate.imgPath = newimg;

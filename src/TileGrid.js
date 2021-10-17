@@ -16,7 +16,7 @@ export default class TileGrid extends Component {
             const row = [];
             for (var j = 0; j < this.props.farmwidth; j++)
             {
-                row.push(<td><Tile key={uuidv4()} tiley={i} tilex={j} tiledata={this.props.farmgrid[i][j]} /></td>);
+                row.push(<td><Tile key={uuidv4()} tiley={i} tilex={j} tiledata={this.props.farmgrid[i][j]} onMouseEnter={(tile) => this.props.tileMouseHover(tile)} onClick={(tile) => this.props.tileClick(tile)} /></td>);
             }
             items.push(<tr>{row}</tr>);
         }

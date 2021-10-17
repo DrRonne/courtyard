@@ -4,6 +4,11 @@ import Menu from './Menu/Menu.js'
 import Topbar from './Topbar/Topbar.js'
 
 export default class Game extends Component {
+    constructor(props) {
+        super(props);
+        this.mode = "multi"; // Can maybe be an enum instead
+        this.gamedata = this.getGameData();
+    }
 
     getGameData() {
         const farmgrid = []
@@ -20,25 +25,43 @@ export default class Game extends Component {
             type: "Field",
             seed: "Asparagus",
             planted: (Date.now() / 1000),
-            fertilized: false
+            fertilized: false,
+            plown: true,
         };
         farmgrid[6][8] = {
             type: "Field",
             seed: "Asparagus",
             planted: (Date.now() / 1000) - 23040,
-            fertilized: false
+            fertilized: false,
+            plown: true,
         };
         farmgrid[6][6] = {
             type: "Field",
             seed: "Asparagus",
             planted: (Date.now() / 1000) - 46080,
-            fertilized: false
+            fertilized: false,
+            plown: true,
         };
         farmgrid[8][6] = {
             type: "Field",
             seed: "Asparagus",
             planted: (Date.now() / 1000) - 74880,
-            fertilized: false
+            fertilized: false,
+            plown: true,
+        };
+        farmgrid[10][10] = {
+            type: "Field",
+            seed: null,
+            planted: null,
+            fertilized: false,
+            plown: true,
+        };
+        farmgrid[12][10] = {
+            type: "Field",
+            seed: null,
+            planted: null,
+            fertilized: false,
+            plown: false,
         };
         return {
             "farm-name": "test farm",
@@ -46,6 +69,47 @@ export default class Game extends Component {
             "farm-length": 100,
             "farm-grid": farmgrid,
         };
+    }
+
+    hoeButtonClick() {
+        this.mode = "hoe";
+    }
+
+    multiButtonClick() {
+        this.mode = "multi";
+    }
+
+    checkTilesTaken(originx, originy, width, height) {
+        for (var x = originx; x > originx - width; x--) {
+            if (!this.gamedata["farm-grid"][x]) {
+                return false;
+            }
+            for (var y = originy; y > originy - height; y--) {
+                if (y < 0 || this.gamedata["farm-grid"][x][y]) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    tileMouseHover(tile) {
+        const x = tile.props.tilex;
+        const y = tile.props.tiley;
+        if (this.mode === "hoe") {
+            if (!this.checkTilesTaken(x, y, 2, 2)) {
+                tile.setBlueprint(2, 2, false);
+            }
+            else {
+                tile.setBlueprint(2, 2, true);
+            }
+        }
+    }
+
+    tileClick(tile) {
+        if (this.mode === "hoe") {
+            console.log("plowing at", tile.props.tilex, tile.props.tiley);
+        }
     }
 
     render() {
@@ -66,10 +130,10 @@ export default class Game extends Component {
         return (
             <div style={game_bg_styles}>
                 <div style={tilegrid_container_styles}>
-                    <TileGrid farmheight={20} farmwidth={20} farmgrid={this.getGameData()["farm-grid"]} />
+                    <TileGrid farmheight={20} farmwidth={20} farmgrid={this.gamedata["farm-grid"]} tileMouseHover={(tile) => this.tileMouseHover(tile)} tileClick={(tile) => this.tileClick(tile)} />
                 </div>
                 <Topbar />
-                <Menu />
+                <Menu hoeClick={() => this.hoeButtonClick()} multiClick={() => this.multiButtonClick()} />
             </div>
         )
     }

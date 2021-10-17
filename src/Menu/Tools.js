@@ -31,10 +31,10 @@ export default class Tools extends Component {
                     <tbody>
                         <tr>
                             <td>
-                                <Cursor />
+                                <Cursor onClick={() => this.props.multiClick()} />
                             </td>
                             <td>
-                                <Hoe />
+                                <Hoe onClick={() => this.props.hoeClick()} />
                             </td>
                             <td>
                                 <Recycle />
