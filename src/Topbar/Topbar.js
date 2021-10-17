@@ -28,10 +28,10 @@ export default class Topbar extends Component {
                                 <Dollars />
                             </td>
                             <td>
-                                <Experience />
+                                <Experience exp={550} level={1} exp_required={1234} />
                             </td>
                             <td>
-                                <FarmName />
+                                <FarmName name={"sample name"} />
                             </td>
                         </tr>
                     </tbody>

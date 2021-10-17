@@ -4,7 +4,6 @@ const { v4: uuidv4 } = require('uuid');
 
 export default class TileGrid extends Component {
     render() {
-        const max_x_translate = -this.props.farmwidth*103;
         const max_y_translate = -this.props.farmheight*26;
         const styles = { 
             transform: `translate(${-103/2 + 1280/2}px, ${max_y_translate/2 + 720/2}px)` 

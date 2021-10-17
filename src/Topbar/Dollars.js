@@ -20,9 +20,9 @@ export default class Dollars extends Component {
         }
         const text_styles = {
             position: 'absolute',
-            transform: 'translate(30px, 7px)',
+            transform: 'translate(25px, 2px)',
             color: 'white',
-
+            fontSize: 25,
         }
         return (
             <div style={div_styles}>
