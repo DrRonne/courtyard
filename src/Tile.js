@@ -14,6 +14,12 @@ export default class Tile extends Component {
         }
     }
 
+    setTileData(tiledata) {
+        const statecopy = {...this.state};
+        statecopy.tiledata = tiledata;
+        this.setState(statecopy);
+    }
+
     setBlueprint(width, height, valid) {
         const statecopy = {...this.state};
         statecopy.placement_blueprint_height = height;

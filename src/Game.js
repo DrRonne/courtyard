@@ -80,12 +80,12 @@ export default class Game extends Component {
     }
 
     checkTilesTaken(originx, originy, width, height) {
-        for (var x = originx; x > originx - width; x--) {
-            if (!this.gamedata["farm-grid"][x]) {
+        for (var y = originy; y > originy - height; y--) {
+            if (!this.gamedata["farm-grid"][y]) {
                 return false;
             }
-            for (var y = originy; y > originy - height; y--) {
-                if (y < 0 || this.gamedata["farm-grid"][x][y]) {
+            for (var x = originx; x > originx - width; x--) {
+                if (x < 0 || this.gamedata["farm-grid"][y][x]) {
                     return false;
                 }
             }
@@ -94,10 +94,8 @@ export default class Game extends Component {
     }
 
     tileMouseHover(tile) {
-        const x = tile.props.tilex;
-        const y = tile.props.tiley;
         if (this.mode === "hoe") {
-            if (!this.checkTilesTaken(x, y, 2, 2)) {
+            if (!this.checkTilesTaken(tile.props.tilex, tile.props.tiley, 2, 2)) {
                 tile.setBlueprint(2, 2, false);
             }
             else {
@@ -108,7 +106,16 @@ export default class Game extends Component {
 
     tileClick(tile) {
         if (this.mode === "hoe") {
-            console.log("plowing at", tile.props.tilex, tile.props.tiley);
+            if (this.checkTilesTaken(tile.props.tilex, tile.props.tiley, 2, 2)) {
+                this.gamedata["farm-grid"][tile.props.tiley][tile.props.tilex] = {
+                    type: "Field",
+                    seed: null,
+                    planted: null,
+                    fertilized: false,
+                    plown: false,
+                };
+                tile.setTileData(this.gamedata["farm-grid"][tile.props.tiley][tile.props.tilex]);
+            }
         }
     }
 
