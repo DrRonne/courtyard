@@ -143,16 +143,29 @@ export default class Game extends Component {
         }
     }
 
+    fieldClick(tile) {
+        if (this.mode === "hoe" && !tile.action.current.state.plown) {
+            this.gamedata["farm-grid"][tile.props.tiley][tile.props.tilex] = {
+                type: "Field",
+                seed: null,
+                planted: null,
+                fertilized: false,
+                plown: false,
+                queued: true,
+            };
+            tile.setTileData(this.gamedata["farm-grid"][tile.props.tiley][tile.props.tilex]);
+            this.taskqueue.push({subject: tile, action: "plow"});
+        }
+    }
+
     componentDidMount() {
         setInterval(() => {
             if (this.taskqueue.length > 0) {
                 const task = this.taskqueue[0];
                 if (task.action === "plow") {
                     const tile = task.subject;
-                    console.log(tile);
-                    console.log(tile.action);
-                    tile.action.plow();
-                    tile.action.setQueued(false);
+                    tile.action.current.plow();
+                    tile.action.current.setQueued(false);
                 }
                 this.taskqueue.shift();
             }
@@ -177,7 +190,7 @@ export default class Game extends Component {
         return (
             <div style={game_bg_styles}>
                 <div style={tilegrid_container_styles}>
-                    <TileGrid ref={this.tilegrid} characterPosX={0} characterPosY={0} characterTileX={this.characterTileX} characterTileY={this.characterTileY} farmheight={20} farmwidth={20} farmgrid={this.gamedata["farm-grid"]} tileMouseHover={(tile) => this.tileMouseHover(tile)} tileClick={(tile) => this.tileClick(tile)} />
+                    <TileGrid ref={this.tilegrid} characterPosX={0} characterPosY={0} characterTileX={this.characterTileX} characterTileY={this.characterTileY} farmheight={20} farmwidth={20} farmgrid={this.gamedata["farm-grid"]} tileMouseHover={(tile) => this.tileMouseHover(tile)} tileClick={(tile) => this.tileClick(tile)} fieldClick={(tile) => this.fieldClick(tile)} />
                 </div>
                 <Topbar />
                 <Menu hoeClick={() => this.hoeButtonClick()} multiClick={() => this.multiButtonClick()} />

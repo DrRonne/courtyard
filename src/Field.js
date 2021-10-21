@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import TileEntity from './TileEntity';
-
+import loading_bar from './assets/world/loading_bar_bg.png'
 
 export default class Field extends TileEntity {
     constructor(props) {
@@ -14,6 +14,8 @@ export default class Field extends TileEntity {
             seed_data: null,
             plown: this.props.plown,
             queued: this.props.queued,
+            actionstate: null,
+            actionprogress: 0,
         };
         // THIS IS DATA THAT SHOULD BE RETRIEVED FROM SOME API
         if (this.state.seed) {
@@ -26,10 +28,27 @@ export default class Field extends TileEntity {
         }
     }
 
-    plow() {
+    sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
+
+    async plow() {
+        const plowtime = 1000; // ms
+        const steptime = 10; // ms
+        const stepsize = 100 / (plowtime / steptime);
+        for (var i = 0; i < 100; i += stepsize) {
+            const copystate = {...this.state};
+            copystate.actionstate = "Plowing";
+            copystate.actionprogress = i;
+            this.setState(copystate);
+            await this.sleep(steptime);
+        }
         const copystate = {...this.state};
         copystate.plown = true;
+        copystate.actionstate = null;
+        copystate.actionprogress = 0;
         this.setState(copystate);
+        this.updateSeedImage();
     }
 
     setQueued(queued) {
@@ -80,21 +99,72 @@ export default class Field extends TileEntity {
             height: this.state.renderHeight,
             transform: `translate(${this.state.horizontalDisplacement}px, ${this.state.verticalDisplacement}px)`,
         };
-        if (this.state.queued) {
+        if (this.state.queued || this.state.actionstate) {
             styles.opacity = 0.5;
         }
+        let actiondiv;
+        if (this.state.actionstate) {
+            const action_div_styles = {
+                position: 'absolute',
+                height: 20,
+                width: 150,
+                transform: 'translate(-50px, -54px)',
+                zIndex: 3,
+                pointerEvents: 'none',
+            };
+            const inner_div_styles = {
+                position: 'relative',
+                pointerEvents: 'none',
+            }
+            const action_bg_styles = {
+                width: '100%',
+                height: '100%',
+                zIndex: 1,
+                pointerEvents: 'none',
+            };
+            const action_bar_styles = {
+                position: 'absolute',
+                left: 1,
+                top: 1,
+                backgroundColor: '#42f54e',
+                height: 'calc(100% - 4px)',
+                width: `calc(${this.state.actionprogress}% - 4px)`,
+                zIndex: 2,
+                pointerEvents: 'none',
+            };
+            const action_text_styles = {
+                position: 'absolute',
+                left: 5,
+                top: 5,
+                color: 'white',
+                fontSize: 16,
+                zIndex: 3,
+                pointerEvents: 'none',
+            }
+            actiondiv = <div style={action_div_styles}>
+                <div style={inner_div_styles}>
+                    <img src={loading_bar} alt="" style={action_bg_styles}></img>
+                    <div style={action_bar_styles} />
+                    <div style={action_text_styles}><strong>{this.state.actionstate}: {this.state.actionprogress}%</strong></div>
+                </div>
+            </div>
+        }
         return (
-            <img ref={this.imgElement} class="FieldImg" style={styles} src={this.state.imgPath} alt=""
-                onLoad={() => {
-                    // Correctly scale and transform the image so it fits in the field
-                    const copystate = {...this.state};
-                    copystate.renderHeight = this.calcRenderHeight(this.imgElement.current.naturalHeight, this.imgElement.current.naturalWidth);
-                    copystate.renderWidth = this.calcRenderWidth(this.props.width);
-                    copystate.horizontalDisplacement = this.calcHorizontalDisplacement(this.props.width, copystate.renderWidth);
-                    copystate.verticalDisplacement = this.calcVerticalDisplacement(copystate.renderHeight);
-                    this.setState(copystate);
-                }}
-            />
+            <Fragment>
+                <img ref={this.imgElement} class="FieldImg" style={styles} src={this.state.imgPath} alt=""
+                    onClick={() => this.props.fieldClick()}
+                    onLoad={() => {
+                        // Correctly scale and transform the image so it fits in the field
+                        const copystate = {...this.state};
+                        copystate.renderHeight = this.calcRenderHeight(this.imgElement.current.naturalHeight, this.imgElement.current.naturalWidth);
+                        copystate.renderWidth = this.calcRenderWidth(this.props.width);
+                        copystate.horizontalDisplacement = this.calcHorizontalDisplacement(this.props.width, copystate.renderWidth);
+                        copystate.verticalDisplacement = this.calcVerticalDisplacement(copystate.renderHeight);
+                        this.setState(copystate);
+                    }}
+                />
+                {actiondiv}
+            </Fragment>
         )
     }
 }

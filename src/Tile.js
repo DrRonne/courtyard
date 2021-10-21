@@ -1,13 +1,13 @@
-import React, { Component } from 'react'
+import React, { Component, createRef } from 'react'
 import grass from './assets/grass.png'
 import Blueprint from './Blueprint.js'
 import Field from './Field.js'
-import Character from './Character.js'
+// import Character from './Character.js'
 
 export default class Tile extends Component {
     constructor(props) {
         super(props);
-        this.action = null;
+        this.action = createRef();
         this.state = {
             tiledata: this.props.tiledata,
             placement_blueprint_width: 0,
@@ -50,17 +50,16 @@ export default class Tile extends Component {
     render() {
         let tile_action;
         if (this.state.tiledata) {
-            tile_action = <Field width={2} height={2} seed={this.state.tiledata.seed} planted={this.state.tiledata.planted} plown={this.state.tiledata.plown} queued={this.state.tiledata.queued} />;
+            tile_action = <Field ref={this.action} width={2} height={2} seed={this.state.tiledata.seed} planted={this.state.tiledata.planted} plown={this.state.tiledata.plown} queued={this.state.tiledata.queued} fieldClick={() => this.props.fieldClick(this)} />;
         }
-        this.action = tile_action;
         let blueprint;
         if (this.state.placement_blueprint_height > 0 && this.state.placement_blueprint_width > 0) {
             blueprint = <Blueprint width={this.state.placement_blueprint_width} height={this.state.placement_blueprint_height} valid={this.state.placement_valid} />
         }
-        let character;
-        if (this.state.hasCharacter) {
-            character = <Character tileOffsetX={this.state.characterPosX} tileOffsetY={this.state.characterPosY} />
-        }
+        // let character;
+        // if (this.state.hasCharacter) {
+        //     character = <Character tileOffsetX={this.state.characterPosX} tileOffsetY={this.state.characterPosY} />
+        // }
         const styles = { 
             transform: `translate(${this.props.tiley*34 - this.props.tilex*103}px, ${-this.props.tiley*26 + this.props.tilex*17}px)`,
             position: 'relative',

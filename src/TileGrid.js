@@ -23,12 +23,12 @@ export default class TileGrid extends Component {
         }
     }
 
-    moveCharacterToPosition(x, y) {
-        // Translate orthogonal x, y coordinates to this weird skewed system
-        const realX = x;
-        const realY = y;
-        const currentTile = this.itemrefs[this.characterTileX][this.characterTileY].current;
-    }
+    // moveCharacterToPosition(x, y) {
+    //     // Translate orthogonal x, y coordinates to this weird skewed system
+    //     const realX = x;
+    //     const realY = y;
+    //     const currentTile = this.itemrefs[this.characterTileX][this.characterTileY].current;
+    // }
 
     moveCharacterToTile(tileX, tileY) {
         // Do one step closer to destination
@@ -69,10 +69,10 @@ export default class TileGrid extends Component {
             for (var j = 0; j < this.props.farmwidth; j++)
             {
                 if (i === this.characterTileY && j === this.characterTileX) {
-                    row.push(<td><Tile ref={this.itemrefs[i][j]} key={uuidv4()} hasCharacter={true} characterPosX={0} characterPosY={0} tiley={i} tilex={j} tiledata={this.props.farmgrid[i][j]} onMouseEnter={(tile) => this.props.tileMouseHover(tile)} onClick={(tile) => this.props.tileClick(tile)} /></td>);
+                    row.push(<td><Tile ref={this.itemrefs[i][j]} key={uuidv4()} hasCharacter={true} characterPosX={0} characterPosY={0} tiley={i} tilex={j} tiledata={this.props.farmgrid[i][j]} onMouseEnter={(tile) => this.props.tileMouseHover(tile)} onClick={(tile) => this.props.tileClick(tile)} fieldClick={(tile) => this.props.fieldClick(tile)} /></td>);
                 }
                 else {
-                    row.push(<td><Tile ref={this.itemrefs[i][j]} key={uuidv4()} hasCharacter={false} characterPosX={0} characterPosY={0} tiley={i} tilex={j} tiledata={this.props.farmgrid[i][j]} onMouseEnter={(tile) => this.props.tileMouseHover(tile)} onClick={(tile) => this.props.tileClick(tile)} /></td>);
+                    row.push(<td><Tile ref={this.itemrefs[i][j]} key={uuidv4()} hasCharacter={false} characterPosX={0} characterPosY={0} tiley={i} tilex={j} tiledata={this.props.farmgrid[i][j]} onMouseEnter={(tile) => this.props.tileMouseHover(tile)} onClick={(tile) => this.props.tileClick(tile)} fieldClick={(tile) => this.props.fieldClick(tile)} /></td>);
                 }
             }
             this.items.push(<tr>{row}</tr>);
