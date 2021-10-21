@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, createRef } from 'react'
 import TileGrid from './TileGrid.js'
 import Menu from './Menu/Menu.js'
 import Topbar from './Topbar/Topbar.js'
@@ -8,6 +8,10 @@ export default class Game extends Component {
         super(props);
         this.mode = "multi"; // Can maybe be an enum instead
         this.gamedata = this.getGameData();
+        this.taskqueue = [];
+        this.characterTileX = 0;
+        this.characterTileY = 0;
+        this.tilegrid = createRef();
     }
 
     getGameData() {
@@ -23,45 +27,63 @@ export default class Game extends Component {
         }
         farmgrid[8][8] = {
             type: "Field",
+            width: 2,
+            height: 2,
             seed: "Asparagus",
             planted: (Date.now() / 1000),
             fertilized: false,
             plown: true,
+            queued: false,
         };
         farmgrid[6][8] = {
             type: "Field",
+            width: 2,
+            height: 2,
             seed: "Asparagus",
             planted: (Date.now() / 1000) - 23040,
             fertilized: false,
             plown: true,
+            queued: false,
         };
         farmgrid[6][6] = {
             type: "Field",
+            width: 2,
+            height: 2,
             seed: "Asparagus",
             planted: (Date.now() / 1000) - 46080,
             fertilized: false,
             plown: true,
+            queued: false,
         };
         farmgrid[8][6] = {
             type: "Field",
+            width: 2,
+            height: 2,
             seed: "Asparagus",
             planted: (Date.now() / 1000) - 74880,
             fertilized: false,
             plown: true,
+            queued: false,
         };
         farmgrid[10][10] = {
             type: "Field",
+            width: 2,
+            height: 2,
             seed: null,
             planted: null,
             fertilized: false,
             plown: true,
+            queued: false,
         };
         farmgrid[12][10] = {
             type: "Field",
+            width: 2,
+            height: 2,
             seed: null,
             planted: null,
             fertilized: false,
             plown: false,
+            queued: false,
         };
         return {
             "farm-name": "test farm",
@@ -113,10 +135,28 @@ export default class Game extends Component {
                     planted: null,
                     fertilized: false,
                     plown: false,
+                    queued: true,
                 };
                 tile.setTileData(this.gamedata["farm-grid"][tile.props.tiley][tile.props.tilex]);
+                this.taskqueue.push({subject: tile, action: "plow"});
             }
         }
+    }
+
+    componentDidMount() {
+        setInterval(() => {
+            if (this.taskqueue.length > 0) {
+                const task = this.taskqueue[0];
+                if (task.action === "plow") {
+                    const tile = task.subject;
+                    console.log(tile);
+                    console.log(tile.action);
+                    tile.action.plow();
+                    tile.action.setQueued(false);
+                }
+                this.taskqueue.shift();
+            }
+        }, 100);
     }
 
     render() {
@@ -137,7 +177,7 @@ export default class Game extends Component {
         return (
             <div style={game_bg_styles}>
                 <div style={tilegrid_container_styles}>
-                    <TileGrid farmheight={20} farmwidth={20} farmgrid={this.gamedata["farm-grid"]} tileMouseHover={(tile) => this.tileMouseHover(tile)} tileClick={(tile) => this.tileClick(tile)} />
+                    <TileGrid ref={this.tilegrid} characterPosX={0} characterPosY={0} characterTileX={this.characterTileX} characterTileY={this.characterTileY} farmheight={20} farmwidth={20} farmgrid={this.gamedata["farm-grid"]} tileMouseHover={(tile) => this.tileMouseHover(tile)} tileClick={(tile) => this.tileClick(tile)} />
                 </div>
                 <Topbar />
                 <Menu hoeClick={() => this.hoeButtonClick()} multiClick={() => this.multiButtonClick()} />

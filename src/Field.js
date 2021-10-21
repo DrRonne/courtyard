@@ -13,6 +13,7 @@ export default class Field extends TileEntity {
             planted: this.props.planted,
             seed_data: null,
             plown: this.props.plown,
+            queued: this.props.queued,
         };
         // THIS IS DATA THAT SHOULD BE RETRIEVED FROM SOME API
         if (this.state.seed) {
@@ -23,6 +24,18 @@ export default class Field extends TileEntity {
                     this.updateSeedImage();
                 });
         }
+    }
+
+    plow() {
+        const copystate = {...this.state};
+        copystate.plown = true;
+        this.setState(copystate);
+    }
+
+    setQueued(queued) {
+        const copystate = {...this.state};
+        copystate.queued = queued;
+        this.setState(copystate);
     }
 
     updateSeedImage() {
@@ -67,6 +80,9 @@ export default class Field extends TileEntity {
             height: this.state.renderHeight,
             transform: `translate(${this.state.horizontalDisplacement}px, ${this.state.verticalDisplacement}px)`,
         };
+        if (this.state.queued) {
+            styles.opacity = 0.5;
+        }
         return (
             <img ref={this.imgElement} class="FieldImg" style={styles} src={this.state.imgPath} alt=""
                 onLoad={() => {
