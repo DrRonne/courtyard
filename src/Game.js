@@ -2,6 +2,7 @@ import React, { Component, createRef } from 'react'
 import TileGrid from './TileGrid.js'
 import Menu from './Menu/Menu.js'
 import Topbar from './Topbar/Topbar.js'
+import Market from './Market/Market.js'
 
 export default class Game extends Component {
     constructor(props) {
@@ -12,6 +13,7 @@ export default class Game extends Component {
         this.characterTileX = 0;
         this.characterTileY = 0;
         this.tilegrid = createRef();
+        this.market = createRef();
     }
 
     getGameData() {
@@ -99,6 +101,10 @@ export default class Game extends Component {
 
     multiButtonClick() {
         this.mode = "multi";
+    }
+
+    marketButtonClick() {
+        this.market.current.setVisible(!this.market.current.state.visible);
     }
 
     checkTilesTaken(originx, originy, width, height) {
@@ -193,7 +199,8 @@ export default class Game extends Component {
                     <TileGrid ref={this.tilegrid} characterPosX={0} characterPosY={0} characterTileX={this.characterTileX} characterTileY={this.characterTileY} farmheight={20} farmwidth={20} farmgrid={this.gamedata["farm-grid"]} tileMouseHover={(tile) => this.tileMouseHover(tile)} tileClick={(tile) => this.tileClick(tile)} fieldClick={(tile) => this.fieldClick(tile)} />
                 </div>
                 <Topbar />
-                <Menu hoeClick={() => this.hoeButtonClick()} multiClick={() => this.multiButtonClick()} />
+                <Menu hoeClick={() => this.hoeButtonClick()} multiClick={() => this.multiButtonClick()} marketClick={() => this.marketButtonClick()} />
+                <Market ref={this.market} />
             </div>
         )
     }

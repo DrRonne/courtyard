@@ -8,7 +8,7 @@ export default class Market extends Tool {
         return (
             <div style={this.div_styles}>
                 <img src={bg} style={this.styles} alt=""/>
-                <img src={img} style={this.img_styles} alt=""/>
+                <img src={img} style={this.img_styles} onClick={() => this.props.onClick()} alt=""/>
             </div>
         )
     }

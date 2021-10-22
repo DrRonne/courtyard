@@ -45,7 +45,7 @@ export default class Tools extends Component {
                                 <Ribbon />
                             </td>
                             <td>
-                                <Market />
+                                <Market onClick={() => this.props.marketClick()} />
                             </td>
                             <td>
                                 <Gift />
