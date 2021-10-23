@@ -2,10 +2,64 @@ import React, { Component } from 'react'
 import background from '../../assets/market/shop_section_background.png'
 import rightArrow from '../../assets/market/arrow_right.png'
 import leftArrow from '../../assets/market/arrow_left.png'
+import data from '../../resources/supported_seed_stats.json'
 import Seed from './ShopItems/Seed';
 
 export default class Seeds extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            page: 0,
+        }
+    }
+
+    rightArrowClick() {
+        if (this.state.page < data.length / 6 - 1) {
+            const statecopy = {...this.state};
+            statecopy.page = statecopy.page + 1;
+            this.setState(statecopy);
+        }
+    }
+
+    leftArrowClick() {
+        if (this.state.page > 0) {
+            const statecopy = {...this.state};
+            statecopy.page = statecopy.page - 1;
+            this.setState(statecopy);
+        }
+    }
+
     render() {
+        let seed1Elem;
+        if (data.length > this.state.page*6) {
+            const seed1 = data[this.state.page*6]
+            seed1Elem = <Seed name={seed1.name} sell={seed1.sellprice} time={seed1.time} price={seed1.cost}/>
+        }
+        let seed2Elem;
+        if (data.length > this.state.page*6 + 1) {
+            const seed2 = data[this.state.page*6 + 1]
+            seed2Elem = <Seed name={seed2.name} sell={seed2.sellprice} time={seed2.time} price={seed2.cost}/>
+        }
+        let seed3Elem;
+        if (data.length > this.state.page*6 + 2) {
+            const seed3 = data[this.state.page*6 + 2]
+            seed3Elem = <Seed name={seed3.name} sell={seed3.sellprice} time={seed3.time} price={seed3.cost}/>
+        }
+        let seed4Elem;
+        if (data.length > this.state.page*6 + 3) {
+            const seed4 = data[this.state.page*6 + 3]
+            seed4Elem = <Seed name={seed4.name} sell={seed4.sellprice} time={seed4.time} price={seed4.cost}/>
+        }
+        let seed5Elem;
+        if (data.length > this.state.page*6 + 4) {
+            const seed5 = data[this.state.page*6 + 4]
+            seed5Elem = <Seed name={seed5.name} sell={seed5.sellprice} time={seed5.time} price={seed5.cost}/>
+        }
+        let seed6Elem;
+        if (data.length > this.state.page*6 + 5) {
+            const seed6 = data[this.state.page*6 + 5]
+            seed6Elem = <Seed name={seed6.name} sell={seed6.sellprice} time={seed6.time} price={seed6.cost}/>
+        }
         const div_styles = {
             position: 'absolute',
             top: 140,
@@ -33,22 +87,30 @@ export default class Seeds extends Component {
             top: 8,
             transform: 'translate(-50%, 0%)',
         };
+        let leftArrowElem;
+        if (this.state.page > 0 ) {
+            leftArrowElem = <img src={leftArrow} style={left_styles} onClick={() => this.leftArrowClick()} alt="" />
+        }
+        let rightArrowElem;
+        if (this.state.page < data.length / 6 - 1) {
+            rightArrowElem = <img src={rightArrow} style={right_styles} onClick={() => this.rightArrowClick()} alt="" />
+        }
         return (
             <div style={div_styles}>
                 <img src={background} style={bg_styles} alt="" />
-                <img src={leftArrow} style={left_styles} alt="" />
-                <img src={rightArrow} style={right_styles} alt="" />
+                {leftArrowElem}
+                {rightArrowElem}
                 <table style={table_styles}>
                     <tbody>
                         <tr>
-                            <td><Seed name={"Asparagus"} sell={123} time={3600} price={454}/></td>
-                            <td><Seed name={"Strawberry"} sell={123} time={7200} price={4567}/></td>
-                            <td><Seed name={"Cabbage"} sell={123} time={120} price={45}/></td>
+                            <td>{seed1Elem}</td>
+                            <td>{seed2Elem}</td>
+                            <td>{seed3Elem}</td>
                         </tr>
                         <tr>
-                            <td><Seed name={"Pumpkin"} sell={123} time={60} price={44535}/></td>
-                            <td><Seed name={"Carrot"} sell={123} time={1} price={465435}/></td>
-                            <td><Seed name={"Tomato"} sell={123} time={86400} price={44534535}/></td>
+                            <td>{seed4Elem}</td>
+                            <td>{seed5Elem}</td>
+                            <td>{seed6Elem}</td>
                         </tr>
                     </tbody>
                 </table>
