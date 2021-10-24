@@ -47,8 +47,34 @@ export default class Field extends TileEntity {
         copystate.plown = true;
         copystate.actionstate = null;
         copystate.actionprogress = 0;
+        copystate.imgPath = this.getFieldImage(null, true, null, null);
         this.setState(copystate);
-        this.updateSeedImage();
+    }
+
+    async plant(data) {
+        const plowtime = 1000; // ms
+        const steptime = 10; // ms
+        const stepsize = 100 / (plowtime / steptime);
+        for (var i = 0; i < 100; i += stepsize) {
+            const copystate = {...this.state};
+            copystate.actionstate = "Planting seed";
+            copystate.actionprogress = i;
+            this.setState(copystate);
+            await this.sleep(steptime);
+        }
+        const copystate = {...this.state};
+        copystate.seed = data;
+        copystate.planted = Date.now() / 1000;
+        copystate.actionstate = null;
+        copystate.actionprogress = 0;
+        fetch(`/assets/seeds/${data}/${data}_properties.json`)
+                .then((r) => r.json())
+                .then((data2) =>{
+                    copystate.seed_data = data2;
+                    const img = this.getFieldImage(data, true, copystate.planted, data2.time);
+                    copystate.imgPath = img;
+                    this.setState(copystate);
+                });
     }
 
     setQueued(queued) {
@@ -57,35 +83,40 @@ export default class Field extends TileEntity {
         this.setState(copystate);
     }
 
-    updateSeedImage() {
+    getFieldImage(seed, plown, planted, time) {
         let newimg;
-        if (this.state.seed) {
-            const time_planted = (Date.now() / 1000) - this.state.planted;
-            const percentage = time_planted / this.state.seed_data.time;
+        if (seed) {
+            const time_planted = (Date.now() / 1000) - planted;
+            const percentage = time_planted / time;
             if (percentage > 1.2) {
-                newimg = "/assets/seeds/" + this.state.seed + "/" + this.state.seed + "_withered.png";
+                newimg = "/assets/seeds/" + seed + "/" + seed + "_withered.png";
             }
             else if (percentage > 1) {
-                newimg = "/assets/seeds/" + this.state.seed + "/" + this.state.seed + "_3.png";
+                newimg = "/assets/seeds/" + seed + "/" + seed + "_3.png";
             }
             else if (percentage > 0.66) {
-                newimg = "/assets/seeds/" + this.state.seed + "/" + this.state.seed + "_2.png";
+                newimg = "/assets/seeds/" + seed + "/" + seed + "_2.png";
             }
             else if (percentage > 0.33) {
-                newimg = "/assets/seeds/" + this.state.seed + "/" + this.state.seed + "_1.png";
+                newimg = "/assets/seeds/" + seed + "/" + seed + "_1.png";
             }
             else {
-                newimg = "/assets/seeds/" + this.state.seed + "/" + this.state.seed + "_0.png";
+                newimg = "/assets/seeds/" + seed + "/" + seed + "_0.png";
             }
         }
         else {
-            if (this.state.plown) {
+            if (plown) {
                 newimg = "/assets/plown_plot.png";
             }
             else {
                 newimg = "/assets/fallow_plot.png";
             }
         }
+        return newimg;
+    }
+
+    updateSeedImage() {
+        const newimg = this.getFieldImage(this.state.seed, this.state.plow, this.state.planted, this.state.seed_data.time);
         const copystate = {...this.state};
         copystate.imgPath = newimg;
         this.setState(copystate);

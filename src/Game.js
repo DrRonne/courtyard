@@ -8,6 +8,7 @@ export default class Game extends Component {
     constructor(props) {
         super(props);
         this.mode = "multi"; // Can maybe be an enum instead
+        this.plantingSeed = null;
         this.gamedata = this.getGameData();
         this.taskqueue = [];
         this.characterTileX = 0;
@@ -162,6 +163,24 @@ export default class Game extends Component {
             tile.setTileData(this.gamedata["farm-grid"][tile.props.tiley][tile.props.tilex]);
             this.taskqueue.push({subject: tile, action: "plow"});
         }
+        else if (this.mode === "plantingSeed" && this.plantingSeed && tile.action.current.state.plown && !tile.action.current.state.seed) {
+            this.gamedata["farm-grid"][tile.props.tiley][tile.props.tilex] = {
+                type: "Field",
+                seed: null,
+                planted: null,
+                fertilized: false,
+                plown: true,
+                queued: true,
+            };
+            tile.setTileData(this.gamedata["farm-grid"][tile.props.tiley][tile.props.tilex]);
+            this.taskqueue.push({subject: tile, action: "plant", data: this.plantingSeed.name});
+        }
+    }
+
+    seedBuyClick(seedData) {
+        this.mode = "plantingSeed";
+        this.plantingSeed = seedData;
+        this.market.current.setVisible(false);
     }
 
     componentDidMount() {
@@ -171,6 +190,11 @@ export default class Game extends Component {
                 if (task.action === "plow") {
                     const tile = task.subject;
                     tile.action.current.plow();
+                    tile.action.current.setQueued(false);
+                }
+                else if (task.action === "plant") {
+                    const tile = task.subject;
+                    tile.action.current.plant(task.data);
                     tile.action.current.setQueued(false);
                 }
                 this.taskqueue.shift();
@@ -200,7 +224,7 @@ export default class Game extends Component {
                 </div>
                 <Topbar />
                 <Menu hoeClick={() => this.hoeButtonClick()} multiClick={() => this.multiButtonClick()} marketClick={() => this.marketButtonClick()} />
-                <Market ref={this.market} />
+                <Market ref={this.market} seedBuyClick={(seedData) => this.seedBuyClick(seedData)} />
             </div>
         )
     }

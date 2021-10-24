@@ -33,32 +33,32 @@ export default class Seeds extends Component {
         let seed1Elem;
         if (data.length > this.state.page*6) {
             const seed1 = data[this.state.page*6]
-            seed1Elem = <Seed name={seed1.name} sell={seed1.sellprice} time={seed1.time} price={seed1.cost}/>
+            seed1Elem = <Seed name={seed1.name} sell={seed1.sellprice} time={seed1.time} price={seed1.cost} seedBuyClick={(seedData) => this.props.seedBuyClick(seedData)} />
         }
         let seed2Elem;
         if (data.length > this.state.page*6 + 1) {
             const seed2 = data[this.state.page*6 + 1]
-            seed2Elem = <Seed name={seed2.name} sell={seed2.sellprice} time={seed2.time} price={seed2.cost}/>
+            seed2Elem = <Seed name={seed2.name} sell={seed2.sellprice} time={seed2.time} price={seed2.cost} seedBuyClick={(seedData) => this.props.seedBuyClick(seedData)} />
         }
         let seed3Elem;
         if (data.length > this.state.page*6 + 2) {
             const seed3 = data[this.state.page*6 + 2]
-            seed3Elem = <Seed name={seed3.name} sell={seed3.sellprice} time={seed3.time} price={seed3.cost}/>
+            seed3Elem = <Seed name={seed3.name} sell={seed3.sellprice} time={seed3.time} price={seed3.cost} seedBuyClick={(seedData) => this.props.seedBuyClick(seedData)} />
         }
         let seed4Elem;
         if (data.length > this.state.page*6 + 3) {
             const seed4 = data[this.state.page*6 + 3]
-            seed4Elem = <Seed name={seed4.name} sell={seed4.sellprice} time={seed4.time} price={seed4.cost}/>
+            seed4Elem = <Seed name={seed4.name} sell={seed4.sellprice} time={seed4.time} price={seed4.cost} seedBuyClick={(seedData) => this.props.seedBuyClick(seedData)} />
         }
         let seed5Elem;
         if (data.length > this.state.page*6 + 4) {
             const seed5 = data[this.state.page*6 + 4]
-            seed5Elem = <Seed name={seed5.name} sell={seed5.sellprice} time={seed5.time} price={seed5.cost}/>
+            seed5Elem = <Seed name={seed5.name} sell={seed5.sellprice} time={seed5.time} price={seed5.cost} seedBuyClick={(seedData) => this.props.seedBuyClick(seedData)} />
         }
         let seed6Elem;
         if (data.length > this.state.page*6 + 5) {
             const seed6 = data[this.state.page*6 + 5]
-            seed6Elem = <Seed name={seed6.name} sell={seed6.sellprice} time={seed6.time} price={seed6.cost}/>
+            seed6Elem = <Seed name={seed6.name} sell={seed6.sellprice} time={seed6.time} price={seed6.cost} seedBuyClick={(seedData) => this.props.seedBuyClick(seedData)} />
         }
         const div_styles = {
             position: 'absolute',

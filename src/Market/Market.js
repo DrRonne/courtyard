@@ -79,7 +79,7 @@ export default class Market extends Component {
                             </tr>
                         </tbody>
                     </table>
-                    <Seeds />
+                    <Seeds seedBuyClick={(seedData) => this.props.seedBuyClick(seedData)} />
                 </div>
             )
         }

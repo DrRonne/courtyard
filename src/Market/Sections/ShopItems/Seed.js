@@ -151,7 +151,7 @@ export default class Seed extends Component {
                         </tr>
                     </tbody>
                 </table>
-                <img src={buy} style={buy_styles} alt="" />
+                <img src={buy} style={buy_styles} alt="" onClick={() => this.props.seedBuyClick(this.props)}/>
             </div>
         )
     }
