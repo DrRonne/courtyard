@@ -9,53 +9,53 @@ export default class Seed extends Component {
         var str = "";
         if (seconds >= 86400) {
             const days = Math.floor(seconds / 86400);
-            seconds = seconds % 86400;
-            str = str + days;
+            seconds %= 86400;
+            str += days;
             if (days > 1) {
-                str = str + " days";
+                str += " days";
             }
             else {
-                str = str + " day";
+                str += " day";
             }
         }
         if (seconds >= 3600) {
             const hours = Math.floor(seconds / 3600);
-            seconds = seconds % 3600;
+            seconds %= 3600;
             if (str.length > 0) {
-                str = str + ", ";
+                str += ", ";
             }
-            str = str + hours;
+            str += hours;
             if (hours > 1) {
-                str = str + " hours";
+                str += " hours";
             }
             else {
-                str = str + " hour";
+                str += " hour";
             }
         }
         if (seconds >= 60) {
             const minutes = Math.floor(seconds / 60);
-            seconds = seconds % 60;
+            seconds %= 60;
             if (str.length > 0) {
-                str = str + ", ";
+                str += ", ";
             }
-            str = str + minutes;
+            str += minutes;
             if (minutes > 1) {
-                str = str + " minutes";
+                str += " minutes";
             }
             else {
-                str = str + " minute";
+                str += " minute";
             }
         }
         if (seconds > 0) {
             if (str.length > 0) {
-                str = str + ", ";
+                str += ", ";
             }
-            str = str + seconds;
+            str += seconds;
             if (seconds > 1) {
-                str = str + " seconds";
+                str += " seconds";
             }
             else {
-                str = str + " second";
+                str += " second";
             }
         }
         return str;

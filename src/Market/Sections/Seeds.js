@@ -16,7 +16,7 @@ export default class Seeds extends Component {
     rightArrowClick() {
         if (this.state.page < data.length / 6 - 1) {
             const statecopy = {...this.state};
-            statecopy.page = statecopy.page + 1;
+            statecopy.page += 1;
             this.setState(statecopy);
         }
     }
@@ -24,7 +24,7 @@ export default class Seeds extends Component {
     leftArrowClick() {
         if (this.state.page > 0) {
             const statecopy = {...this.state};
-            statecopy.page = statecopy.page - 1;
+            statecopy.page -= 1;
             this.setState(statecopy);
         }
     }
