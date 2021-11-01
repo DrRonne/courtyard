@@ -9,3 +9,5 @@ export const tile_length = 17
 
 export const plow_cost = 15
 export const plow_exp = 1
+
+export const wither_factor = 2.5

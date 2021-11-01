@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import { ReactSession } from 'react-client-session';
-import { server_ip, server_port, plow_cost, plow_exp } from './Constants';
+import { server_ip, server_port, plow_cost, plow_exp, wither_factor } from './Constants';
 import TileEntity from './TileEntity';
 import loading_bar from './assets/world/loading_bar_bg.png'
 
@@ -198,7 +198,7 @@ export default class Field extends TileEntity {
         if (seed) {
             const time_planted = (Date.now() / 1000) - planted;
             const percentage = time_planted / time;
-            if (percentage > 1.2) {
+            if (percentage > wither_factor) {
                 newimg = "/assets/seeds/" + seed + "/" + seed + "_withered.png";
             }
             else if (percentage > 1) {
