@@ -50,7 +50,9 @@ export default class Tile extends Component {
     render() {
         let tile_action;
         if (this.state.tiledata) {
-            tile_action = <Field ref={this.action} width={2} height={2} seed={this.state.tiledata.seed} planted={this.state.tiledata.planted} plown={this.state.tiledata.plown} queued={this.state.tiledata.queued} fieldClick={() => this.props.fieldClick(this)} />;
+            tile_action = <Field x={this.props.tilex} y={this.props.tiley} ref={this.action} width={2} height={2} seed={this.state.tiledata.seed}
+                planted={this.state.tiledata.planted} plown={this.state.tiledata.plown} queued={this.state.tiledata.queued}
+                fieldClick={() => this.props.fieldClick(this)} setGridData={(x, y, data) => this.props.setGridData(x, y, data)} />;
         }
         let blueprint;
         if (this.state.placement_blueprint_height > 0 && this.state.placement_blueprint_width > 0) {

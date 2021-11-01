@@ -68,12 +68,14 @@ export default class TileGrid extends Component {
             const row = [];
             for (var j = 0; j < this.props.farmwidth; j++)
             {
-                if (i === this.characterTileY && j === this.characterTileX) {
-                    row.push(<td><Tile ref={this.itemrefs[i][j]} key={uuidv4()} hasCharacter={true} characterPosX={0} characterPosY={0} tiley={i} tilex={j} tiledata={this.props.farmgrid[i][j]} onMouseEnter={(tile) => this.props.tileMouseHover(tile)} onClick={(tile) => this.props.tileClick(tile)} fieldClick={(tile) => this.props.fieldClick(tile)} /></td>);
-                }
-                else {
-                    row.push(<td><Tile ref={this.itemrefs[i][j]} key={uuidv4()} hasCharacter={false} characterPosX={0} characterPosY={0} tiley={i} tilex={j} tiledata={this.props.farmgrid[i][j]} onMouseEnter={(tile) => this.props.tileMouseHover(tile)} onClick={(tile) => this.props.tileClick(tile)} fieldClick={(tile) => this.props.fieldClick(tile)} /></td>);
-                }
+                // if (i === this.characterTileY && j === this.characterTileX) {
+                //     row.push(<td><Tile ref={this.itemrefs[i][j]} key={uuidv4()} hasCharacter={true} characterPosX={0} characterPosY={0} tiley={i} tilex={j} tiledata={this.props.farmgrid[i][j]} onMouseEnter={(tile) => this.props.tileMouseHover(tile)} onClick={(tile) => this.props.tileClick(tile)} fieldClick={(tile) => this.props.fieldClick(tile)} /></td>);
+                // }
+                // else {
+                    row.push(<td><Tile ref={this.itemrefs[i][j]} key={uuidv4()} hasCharacter={false} characterPosX={0} characterPosY={0} tiley={i} tilex={j}
+                        tiledata={this.props.farmgrid[i][j]} onMouseEnter={(tile) => this.props.tileMouseHover(tile)} onClick={(tile) => this.props.tileClick(tile)}
+                        fieldClick={(tile) => this.props.fieldClick(tile)} setGridData={(x, y, data) => this.props.setGridData(x, y, data)} /></td>);
+                // }
             }
             this.items.push(<tr>{row}</tr>);
         }

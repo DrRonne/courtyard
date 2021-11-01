@@ -38,9 +38,9 @@ export default class Experience extends Component {
             textAlign: 'center',
             transform: 'translate(0px, -2px)',
             marginLeft: 'auto',
-            webkitTextStroke: '#414512',
-            webkitTextFillColor: 'white',
-            webkitTextStrokeWidth: '1px',
+            WebkitTextStroke: '#414512',
+            WebkitTextFillColor: 'white',
+            WebkitTextStrokeWidth: '1px',
             fontSize: 30,
             zIndex: 3,
         }

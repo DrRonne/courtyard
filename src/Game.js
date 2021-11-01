@@ -1,8 +1,10 @@
 import React, { Component, createRef } from 'react'
+import { ReactSession } from 'react-client-session';
 import TileGrid from './TileGrid.js'
 import Menu from './Menu/Menu.js'
 import Topbar from './Topbar/Topbar.js'
 import Market from './Market/Market.js'
+import { server_ip, server_port } from './Constants.js';
 
 export default class Game extends Component {
     constructor(props) {
@@ -15,85 +17,25 @@ export default class Game extends Component {
         this.characterTileY = 0;
         this.tilegrid = createRef();
         this.market = createRef();
+        this.state = {
+            renderReady: false,
+        }
+    }
+
+    setGridData(x, y, data) {
+        this.gamedata["farm-grid"][x][y] = data;
     }
 
     getGameData() {
-        const farmgrid = []
-        for (var i = 0; i < 30; i++)
-        {
-            const row = []
-            for (var j = 0; j < 30; j++)
-            {
-                row.push(null);
-            }
-            farmgrid.push(row);
-        }
-        farmgrid[8][8] = {
-            type: "Field",
-            width: 2,
-            height: 2,
-            seed: "Asparagus",
-            planted: (Date.now() / 1000),
-            fertilized: false,
-            plown: true,
-            queued: false,
-        };
-        farmgrid[6][8] = {
-            type: "Field",
-            width: 2,
-            height: 2,
-            seed: "Asparagus",
-            planted: (Date.now() / 1000) - 23040,
-            fertilized: false,
-            plown: true,
-            queued: false,
-        };
-        farmgrid[6][6] = {
-            type: "Field",
-            width: 2,
-            height: 2,
-            seed: "Asparagus",
-            planted: (Date.now() / 1000) - 46080,
-            fertilized: false,
-            plown: true,
-            queued: false,
-        };
-        farmgrid[8][6] = {
-            type: "Field",
-            width: 2,
-            height: 2,
-            seed: "Asparagus",
-            planted: (Date.now() / 1000) - 74880,
-            fertilized: false,
-            plown: true,
-            queued: false,
-        };
-        farmgrid[10][10] = {
-            type: "Field",
-            width: 2,
-            height: 2,
-            seed: null,
-            planted: null,
-            fertilized: false,
-            plown: true,
-            queued: false,
-        };
-        farmgrid[12][10] = {
-            type: "Field",
-            width: 2,
-            height: 2,
-            seed: null,
-            planted: null,
-            fertilized: false,
-            plown: false,
-            queued: false,
-        };
-        return {
-            "farm-name": "test farm",
-            "farm-width": 100,
-            "farm-length": 100,
-            "farm-grid": farmgrid,
-        };
+        ReactSession.setStoreType("sessionStorage");
+        fetch(`http://${server_ip}:${server_port}/GetFarmData`, {
+            headers: { Authentication: `${ReactSession.get("token")}`
+            }})
+            .then(res => res.json())
+            .then(json => {
+                this.gamedata = JSON.parse(json);
+                this.setState({renderReady: true});
+            })
     }
 
     hoeButtonClick() {
@@ -203,29 +145,37 @@ export default class Game extends Component {
     }
 
     render() {
-        const game_bg_styles = {
-            background: '#43a143',
-            width: 1280,
-            height: 720,
-            display: 'block',
-            marginLeft: 'auto',
-            marginRight: 'auto',
-            position: 'relative',
-        }
-        const tilegrid_container_styles = {
-            overflow: 'hidden',
-            width: 1280,
-            height: 720,
+        if (this.state.renderReady) {
+            const game_bg_styles = {
+                background: '#43a143',
+                width: 1280,
+                height: 720,
+                display: 'block',
+                marginLeft: 'auto',
+                marginRight: 'auto',
+                position: 'relative',
+            }
+            const tilegrid_container_styles = {
+                overflow: 'hidden',
+                width: 1280,
+                height: 720,
+            }
+            return (
+                <div style={game_bg_styles}>
+                    <div style={tilegrid_container_styles}>
+                        <TileGrid ref={this.tilegrid} characterPosX={0} characterPosY={0} characterTileX={this.characterTileX} characterTileY={this.characterTileY}
+                            farmheight={20} farmwidth={20} farmgrid={this.gamedata["farm-grid"]} tileMouseHover={(tile) => this.tileMouseHover(tile)}
+                            tileClick={(tile) => this.tileClick(tile)} fieldClick={(tile) => this.fieldClick(tile)}
+                            setGridData={(x, y, data) => this.setGridData(x, y, data)} />
+                    </div>
+                    <Topbar />
+                    <Menu hoeClick={() => this.hoeButtonClick()} multiClick={() => this.multiButtonClick()} marketClick={() => this.marketButtonClick()} />
+                    <Market ref={this.market} seedBuyClick={(seedData) => this.seedBuyClick(seedData)} />
+                </div>
+            )
         }
         return (
-            <div style={game_bg_styles}>
-                <div style={tilegrid_container_styles}>
-                    <TileGrid ref={this.tilegrid} characterPosX={0} characterPosY={0} characterTileX={this.characterTileX} characterTileY={this.characterTileY} farmheight={20} farmwidth={20} farmgrid={this.gamedata["farm-grid"]} tileMouseHover={(tile) => this.tileMouseHover(tile)} tileClick={(tile) => this.tileClick(tile)} fieldClick={(tile) => this.fieldClick(tile)} />
-                </div>
-                <Topbar />
-                <Menu hoeClick={() => this.hoeButtonClick()} multiClick={() => this.multiButtonClick()} marketClick={() => this.marketButtonClick()} />
-                <Market ref={this.market} seedBuyClick={(seedData) => this.seedBuyClick(seedData)} />
-            </div>
+            <div></div>
         )
     }
 }

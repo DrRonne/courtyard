@@ -1,4 +1,6 @@
 import React, { Fragment } from 'react'
+import { ReactSession } from 'react-client-session';
+import { server_ip, server_port } from './Constants';
 import TileEntity from './TileEntity';
 import loading_bar from './assets/world/loading_bar_bg.png'
 
@@ -43,12 +45,38 @@ export default class Field extends TileEntity {
             this.setState(copystate);
             await this.sleep(steptime);
         }
-        const copystate = {...this.state};
-        copystate.plown = true;
-        copystate.actionstate = null;
-        copystate.actionprogress = 0;
-        copystate.imgPath = this.getFieldImage(null, true, null, null);
-        this.setState(copystate);
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json',
+                       'Authentication': `${ReactSession.get("token") }`},
+            body: JSON.stringify({ x: this.props.x, y: this.props.y })
+          };
+          fetch(`http://${server_ip}:${server_port}/PlowField`, requestOptions)
+                .then((r) => {
+                    if (r.ok)
+                    { return r.json(); }
+                    else
+                        {
+                            window.location.reload();
+                        }
+                    })
+                .then((data) =>{
+                    const griddata = {
+                        type: "Field",
+                        seed: null,
+                        planted: null,
+                        fertilized: false,
+                        plown: true,
+                        queued: false,
+                    };
+                    this.props.setGridData(this.props.x, this.props.y, griddata);
+                    const copystate = {...this.state};
+                    copystate.plown = true;
+                    copystate.actionstate = null;
+                    copystate.actionprogress = 0;
+                    copystate.imgPath = this.getFieldImage(null, true, null, null);
+                    this.setState(copystate);
+                });
     }
 
     async plant(data) {
@@ -62,18 +90,44 @@ export default class Field extends TileEntity {
             this.setState(copystate);
             await this.sleep(steptime);
         }
-        const copystate = {...this.state};
-        copystate.seed = data;
-        copystate.planted = Date.now() / 1000;
-        copystate.actionstate = null;
-        copystate.actionprogress = 0;
-        fetch(`/assets/seeds/${data}/${data}_properties.json`)
-                .then((r) => r.json())
-                .then((data2) =>{
-                    copystate.seed_data = data2;
-                    const img = this.getFieldImage(data, true, copystate.planted, data2.time);
-                    copystate.imgPath = img;
-                    this.setState(copystate);
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json',
+                       'Authentication': `${ReactSession.get("token") }`},
+            body: JSON.stringify({ x: this.props.x, y: this.props.y, seed: data })
+          };
+          fetch(`http://${server_ip}:${server_port}/PlantSeed`, requestOptions)
+                .then((r) => {
+                    if (r.ok)
+                    { return r.json(); }
+                    else
+                        {
+                            window.location.reload();
+                        }
+                    })
+                .then((respdata) =>{
+                    const copystate = {...this.state};
+                    copystate.seed = data;
+                    copystate.planted = respdata.planted;
+                    copystate.actionstate = null;
+                    copystate.actionprogress = 0;
+                    fetch(`/assets/seeds/${data}/${data}_properties.json`)
+                            .then((r) => r.json())
+                            .then((data2) =>{
+                                const griddata = {
+                                    type: "Field",
+                                    seed: data,
+                                    planted: respdata.planted,
+                                    fertilized: false,
+                                    plown: true,
+                                    queued: false,
+                                };
+                                this.props.setGridData(this.props.x, this.props.y, griddata);
+                                copystate.seed_data = data2;
+                                const img = this.getFieldImage(data, true, copystate.planted, data2.time);
+                                copystate.imgPath = img;
+                                this.setState(copystate);
+                            });
                 });
     }
 

@@ -23,9 +23,9 @@ export default class FarmName extends Component {
             height: '100%',
             textAlign: 'center',
             marginLeft: 'auto',
-            webkitTextStroke: '#414512',
-            webkitTextFillColor: 'white',
-            webkitTextStrokeWidth: '1px',
+            WebkitTextStroke: '#414512',
+            WebkitTextFillColor: 'white',
+            WebkitTextStrokeWidth: '1px',
             fontSize: 22,
             zIndex: 3,
         }
