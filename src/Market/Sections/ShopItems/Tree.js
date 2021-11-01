@@ -4,7 +4,7 @@ import iconBackground from '../../../assets/market/icon_background.png'
 import coin from '../../../assets/market/coins_icon.png'
 import buy from '../../../assets/market/buy_button.png'
 
-export default class Seed extends Component {
+export default class Tree extends Component {
     convertSecondsToTimeString(seconds) {
         var str = "";
         if (seconds >= 86400) {
@@ -137,7 +137,7 @@ export default class Seed extends Component {
             left: '50%',
             transform: 'translate(-50%, -50%)',
         };
-        const icon = "/assets/seeds/" + this.props.name + "/" + this.props.name + "_icon.png";
+        const icon = "/assets/trees/" + this.props.name + "/" + this.props.name + "_icon.png";
         return (
             <div style={div_styles}>
                 <img src={background} alt="" />
@@ -154,7 +154,7 @@ export default class Seed extends Component {
                         </tr>
                     </tbody>
                 </table>
-                <img src={buy} style={buy_styles} alt="" onClick={() => this.props.seedBuyClick(this.props)}/>
+                <img src={buy} style={buy_styles} alt="" onClick={() => this.props.treeBuyClick(this.props)}/>
             </div>
         )
     }

@@ -44,7 +44,7 @@ export default class TreesButton extends Component {
         return (
             <div style={div_styles} >
                 <img src={left} style={left_styles} alt="" />
-                <img src={middle} style={middle_styles} alt="" />
+                <img src={middle} style={middle_styles} alt="" onClick={() => this.props.onTreesButtonClick()} />
                 <img src={right} style={right_styles} alt="" />
                 <div style={fill_styles} />
                 <div style={text_styles}><strong>Trees</strong></div>

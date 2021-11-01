@@ -12,12 +12,14 @@ import ExpandButton from './SectionButtons/ExpandButton'
 import TractorsButton from './SectionButtons/TractorsButton'
 
 import Seeds from './Sections/Seeds'
+import Trees from './Sections/Trees'
 
 export default class Market extends Component {
     constructor(props) {
         super(props);
         this.state = {
             visible: false,
+            sectionshow: "Seeds",
         }
     }
 
@@ -31,8 +33,29 @@ export default class Market extends Component {
         this.setVisible(false);
     }
 
+    onSeedsButtonClick() {
+        this.setState({
+            visible: this.state.visible,
+            sectionshow: "Seeds",
+        });
+    }
+
+    onTreesButtonClick() {
+        this.setState({
+            visible: this.state.visible,
+            sectionshow: "Trees",
+        });
+    }
+
     render() {
         if (this.state.visible) {
+            let shownsection;
+            if (this.state.sectionshow === "Seeds") {
+                shownsection = <Seeds seedBuyClick={(seedData) => this.props.seedBuyClick(seedData)} />
+            }
+            else if (this.state.sectionshow === "Trees") {
+                shownsection = <Trees treeBuyClick={(treeData) => this.props.seedBuyClick(treeData)} />
+            }
             const div_styles = {
                 position: 'absolute',
                 top: 65,
@@ -69,8 +92,8 @@ export default class Market extends Component {
                     <table style={section_styles}>
                         <tbody>
                             <tr>
-                                <td><SeedsButton /></td>
-                                <td><TreesButton /></td>
+                                <td><SeedsButton onSeedsButtonClick={() => {this.onSeedsButtonClick()}} /></td>
+                                <td><TreesButton onTreesButtonClick={() => {this.onTreesButtonClick()}} /></td>
                                 <td><AnimalsButton /></td>
                                 <td><BuildingsButton /></td>
                                 <td><DecorationsButton /></td>
@@ -79,7 +102,7 @@ export default class Market extends Component {
                             </tr>
                         </tbody>
                     </table>
-                    <Seeds seedBuyClick={(seedData) => this.props.seedBuyClick(seedData)} />
+                    {shownsection}
                 </div>
             )
         }
