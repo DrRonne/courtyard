@@ -2,6 +2,7 @@ import React, { Component, createRef } from 'react'
 import grass from './assets/grass.png'
 import Blueprint from './Blueprint.js'
 import Field from './Field.js'
+import { field_length, field_width, tile_length, tile_width } from './Constants'
 // import Character from './Character.js'
 
 export default class Tile extends Component {
@@ -50,7 +51,7 @@ export default class Tile extends Component {
     render() {
         let tile_action;
         if (this.state.tiledata) {
-            tile_action = <Field x={this.props.tilex} y={this.props.tiley} ref={this.action} width={2} height={2} seed={this.state.tiledata.seed}
+            tile_action = <Field x={this.props.tilex} y={this.props.tiley} ref={this.action} width={field_width} height={field_length} seed={this.state.tiledata.seed}
                 planted={this.state.tiledata.planted} plown={this.state.tiledata.plown} queued={this.state.tiledata.queued}
                 fieldClick={() => this.props.fieldClick(this)} setGridData={(x, y, data) => this.props.setGridData(x, y, data)} />;
         }
@@ -63,7 +64,7 @@ export default class Tile extends Component {
         //     character = <Character tileOffsetX={this.state.characterPosX} tileOffsetY={this.state.characterPosY} />
         // }
         const styles = { 
-            transform: `translate(${this.props.tiley*34 - this.props.tilex*103}px, ${-this.props.tiley*26 + this.props.tilex*17}px)`,
+            transform: `translate(${this.props.tiley*tile_length - this.props.tilex*(tile_width * 1.6)}px, ${-this.props.tiley*(tile_width * 0.5) + this.props.tilex*(tile_length/2)}px)`,
             position: 'relative',
             margin: 0,
             // backgroundColor: 'red',

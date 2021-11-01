@@ -1,5 +1,6 @@
 import React, { Component, createRef } from 'react'
 import Tile from './Tile.js'
+import { tile_width } from './Constants.js';
 const { v4: uuidv4 } = require('uuid');
 
 export default class TileGrid extends Component {
@@ -58,7 +59,7 @@ export default class TileGrid extends Component {
     render() {
         const max_y_translate = -this.props.farmheight*26;
         const styles = { 
-            transform: `translate(${-103/2 + 1280/2 + this.state.xOffset}px, ${max_y_translate/2 + 720/2 + this.state.yOffset}px)` 
+            transform: `translate(${-tile_width * 1.6 / 2 + 1280/2 + this.state.xOffset}px, ${max_y_translate/2 + 720/2 + this.state.yOffset}px)` 
         };
 
         this.items = [];

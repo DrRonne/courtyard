@@ -4,7 +4,7 @@ import TileGrid from './TileGrid.js'
 import Menu from './Menu/Menu.js'
 import Topbar from './Topbar/Topbar.js'
 import Market from './Market/Market.js'
-import { server_ip, server_port } from './Constants.js';
+import { server_ip, server_port, field_width, field_length } from './Constants.js';
 
 export default class Game extends Component {
     constructor(props) {
@@ -66,18 +66,18 @@ export default class Game extends Component {
 
     tileMouseHover(tile) {
         if (this.mode === "hoe") {
-            if (!this.checkTilesTaken(tile.props.tilex, tile.props.tiley, 2, 2)) {
-                tile.setBlueprint(2, 2, false);
+            if (!this.checkTilesTaken(tile.props.tilex, tile.props.tiley, field_width, field_length)) {
+                tile.setBlueprint(field_width, field_length, false);
             }
             else {
-                tile.setBlueprint(2, 2, true);
+                tile.setBlueprint(field_width, field_length, true);
             }
         }
     }
 
     tileClick(tile) {
         if (this.mode === "hoe") {
-            if (this.checkTilesTaken(tile.props.tilex, tile.props.tiley, 2, 2)) {
+            if (this.checkTilesTaken(tile.props.tilex, tile.props.tiley, field_width, field_length)) {
                 this.gamedata["farm-grid"][tile.props.tiley][tile.props.tilex] = {
                     type: "Field",
                     seed: null,
@@ -164,8 +164,8 @@ export default class Game extends Component {
                 <div style={game_bg_styles}>
                     <div style={tilegrid_container_styles}>
                         <TileGrid ref={this.tilegrid} characterPosX={0} characterPosY={0} characterTileX={this.characterTileX} characterTileY={this.characterTileY}
-                            farmheight={20} farmwidth={20} farmgrid={this.gamedata["farm-grid"]} tileMouseHover={(tile) => this.tileMouseHover(tile)}
-                            tileClick={(tile) => this.tileClick(tile)} fieldClick={(tile) => this.fieldClick(tile)}
+                            farmheight={this.gamedata["farm-height"]} farmwidth={this.gamedata["farm-height"]} farmgrid={this.gamedata["farm-grid"]}
+                            tileMouseHover={(tile) => this.tileMouseHover(tile)} tileClick={(tile) => this.tileClick(tile)} fieldClick={(tile) => this.fieldClick(tile)}
                             setGridData={(x, y, data) => this.setGridData(x, y, data)} />
                     </div>
                     <Topbar />
