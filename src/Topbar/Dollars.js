@@ -3,6 +3,17 @@ import background from '../assets/topbar/dollars_background.png'
 import icon from '../assets/topbar/dollars_icon.png'
 
 export default class Dollars extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            value: this.props.value,
+        }
+    }
+
+    setCash(amount) {
+        this.setState({value: amount});
+    }
+
     render() {
         const div_styles = {
             position: 'relative',
@@ -27,7 +38,7 @@ export default class Dollars extends Component {
         return (
             <div style={div_styles}>
                 <img src={icon} style={icon_styles} alt=""/>
-                <div style={text_styles}><strong>999</strong></div>
+                <div style={text_styles}><strong>{this.state.value}</strong></div>
                 <img src={background} style={bg_styles} alt=""/>
             </div>
         )

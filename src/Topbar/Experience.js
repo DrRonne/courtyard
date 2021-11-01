@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import background from '../assets/topbar/experience_background.png'
 import icon from '../assets/topbar/level_icon.png'
+import data from '../resources/level_experience.json'
 
 export default class Experience extends Component {
     constructor(props) {
@@ -8,12 +9,29 @@ export default class Experience extends Component {
         this.state = {
             level: this.props.level,
             exp: this.props.exp,
-            exp_required: this.props.exp_required
+            exp_required: data[this.props.level+1] - data[this.props.level],
+        }
+    }
+
+    setExpLevel(newexp, newlevel) {
+        this.setState({
+            level: newlevel,
+            exp: newexp,
+            exp_required: data[newlevel+1] - data[newlevel],
+        });
+    }
+
+    addExp(amount) {
+        if (this.state.exp + amount >= data[this.state.level]) {
+            this.setExpLevel(this.state.exp + amount, this.state.level + 1);
+        }
+        else {
+            this.setExpLevel(this.state.exp + amount, this.state.level);
         }
     }
 
     render() {
-        const progress = this.state.exp / this.state.exp_required * 100;
+        const progress = (this.state.exp - data[this.state.level]) / this.state.exp_required * 100;
         const div_styles = {
             position: 'relative',
             margin: 20,

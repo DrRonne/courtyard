@@ -17,13 +17,34 @@ export default class Game extends Component {
         this.characterTileY = 0;
         this.tilegrid = createRef();
         this.market = createRef();
+        this.topbar = createRef();
         this.state = {
             renderReady: false,
         }
     }
 
+    addCoins(amount) {
+        if (this.topbar && this.topbar.current) {
+            const tb = this.topbar.current;
+            if (tb.coins && tb.coins.current) {
+                const c = tb.coins.current;
+                c.setCoins(this.gamedata["coins"] + amount);
+            }
+        }
+    }
+
+    addExp(amount) {
+        if (this.topbar && this.topbar.current) {
+            const tb = this.topbar.current;
+            if (tb.levelexp && tb.levelexp.current) {
+                const e = tb.levelexp.current;
+                e.addExp(amount);
+            }
+        }
+    }
+
     setGridData(x, y, data) {
-        this.gamedata["farm-grid"][x][y] = data;
+        this.gamedata["farmdata"]["farm-grid"][x][y] = data;
     }
 
     getGameData() {
@@ -33,7 +54,7 @@ export default class Game extends Component {
             }})
             .then(res => res.json())
             .then(json => {
-                this.gamedata = JSON.parse(json);
+                this.gamedata = json;
                 this.setState({renderReady: true});
             })
     }
@@ -52,11 +73,11 @@ export default class Game extends Component {
 
     checkTilesTaken(originx, originy, width, height) {
         for (var y = originy; y > originy - height; y--) {
-            if (!this.gamedata["farm-grid"][y]) {
+            if (!this.gamedata["farmdata"]["farm-grid"][y]) {
                 return false;
             }
             for (var x = originx; x > originx - width; x--) {
-                if (x < 0 || this.gamedata["farm-grid"][y][x]) {
+                if (x < 0 || this.gamedata["farmdata"]["farm-grid"][y][x]) {
                     return false;
                 }
             }
@@ -78,7 +99,7 @@ export default class Game extends Component {
     tileClick(tile) {
         if (this.mode === "hoe") {
             if (this.checkTilesTaken(tile.props.tilex, tile.props.tiley, field_width, field_length)) {
-                this.gamedata["farm-grid"][tile.props.tiley][tile.props.tilex] = {
+                this.gamedata["farmdata"]["farm-grid"][tile.props.tiley][tile.props.tilex] = {
                     type: "Field",
                     seed: null,
                     planted: null,
@@ -86,7 +107,7 @@ export default class Game extends Component {
                     plown: false,
                     queued: true,
                 };
-                tile.setTileData(this.gamedata["farm-grid"][tile.props.tiley][tile.props.tilex]);
+                tile.setTileData(this.gamedata["farmdata"]["farm-grid"][tile.props.tiley][tile.props.tilex]);
                 this.taskqueue.push({subject: tile, action: "plow"});
             }
         }
@@ -94,7 +115,7 @@ export default class Game extends Component {
 
     fieldClick(tile) {
         if (this.mode === "hoe" && !tile.action.current.state.plown) {
-            this.gamedata["farm-grid"][tile.props.tiley][tile.props.tilex] = {
+            this.gamedata["farmdata"]["farm-grid"][tile.props.tiley][tile.props.tilex] = {
                 type: "Field",
                 seed: null,
                 planted: null,
@@ -102,11 +123,11 @@ export default class Game extends Component {
                 plown: false,
                 queued: true,
             };
-            tile.setTileData(this.gamedata["farm-grid"][tile.props.tiley][tile.props.tilex]);
+            tile.setTileData(this.gamedata["farmdata"]["farm-grid"][tile.props.tiley][tile.props.tilex]);
             this.taskqueue.push({subject: tile, action: "plow"});
         }
         else if (this.mode === "plantingSeed" && this.plantingSeed && tile.action.current.state.plown && !tile.action.current.state.seed) {
-            this.gamedata["farm-grid"][tile.props.tiley][tile.props.tilex] = {
+            this.gamedata["farmdata"]["farm-grid"][tile.props.tiley][tile.props.tilex] = {
                 type: "Field",
                 seed: null,
                 planted: null,
@@ -114,7 +135,7 @@ export default class Game extends Component {
                 plown: true,
                 queued: true,
             };
-            tile.setTileData(this.gamedata["farm-grid"][tile.props.tiley][tile.props.tilex]);
+            tile.setTileData(this.gamedata["farmdata"]["farm-grid"][tile.props.tiley][tile.props.tilex]);
             this.taskqueue.push({subject: tile, action: "plant", data: this.plantingSeed.name});
         }
     }
@@ -164,11 +185,12 @@ export default class Game extends Component {
                 <div style={game_bg_styles}>
                     <div style={tilegrid_container_styles}>
                         <TileGrid ref={this.tilegrid} characterPosX={0} characterPosY={0} characterTileX={this.characterTileX} characterTileY={this.characterTileY}
-                            farmheight={this.gamedata["farm-height"]} farmwidth={this.gamedata["farm-height"]} farmgrid={this.gamedata["farm-grid"]}
+                            farmheight={this.gamedata["farmdata"]["farm-height"]} farmwidth={this.gamedata["farmdata"]["farm-height"]} farmgrid={this.gamedata["farmdata"]["farm-grid"]}
                             tileMouseHover={(tile) => this.tileMouseHover(tile)} tileClick={(tile) => this.tileClick(tile)} fieldClick={(tile) => this.fieldClick(tile)}
-                            setGridData={(x, y, data) => this.setGridData(x, y, data)} />
+                            setGridData={(x, y, data) => this.setGridData(x, y, data)} addCoins={(amount) => this.addCoins(amount)} addExp={(amount) => this.addExp(amount)} />
                     </div>
-                    <Topbar />
+                    <Topbar ref={this.topbar} coins={this.gamedata["coins"]} cash={this.gamedata["cash"]} level={this.gamedata["level"]}
+                        experience={this.gamedata["experience"]} farmname={this.gamedata["farmdata"]["farm-name"]} />
                     <Menu hoeClick={() => this.hoeButtonClick()} multiClick={() => this.multiButtonClick()} marketClick={() => this.marketButtonClick()} />
                     <Market ref={this.market} seedBuyClick={(seedData) => this.seedBuyClick(seedData)} />
                 </div>

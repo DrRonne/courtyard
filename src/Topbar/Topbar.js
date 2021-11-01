@@ -1,10 +1,17 @@
-import React, { Component } from 'react'
+import React, { Component, createRef } from 'react'
 import Coins from './Coins'
 import Dollars from './Dollars'
 import Experience from './Experience'
 import FarmName from './FarmName'
 
 export default class Topbar extends Component {
+    constructor(props) {
+        super(props);
+        this.coins = createRef();
+        this.cash = createRef();
+        this.levelexp = createRef();
+    }
+
     render() {
         const menu_div_styles = {
             position: 'absolute',
@@ -22,16 +29,16 @@ export default class Topbar extends Component {
                     <tbody>
                         <tr>
                             <td style={friends_parent_styles}>
-                                <Coins />
+                                <Coins ref={this.coins} value={this.props.coins} />
                             </td>
                             <td>
-                                <Dollars />
+                                <Dollars ref={this.cash} value={this.props.cash} />
                             </td>
                             <td>
-                                <Experience exp={550} level={1} exp_required={1234} />
+                                <Experience ref={this.levelexp} exp={this.props.experience} level={this.props.level} />
                             </td>
                             <td>
-                                <FarmName name={"sample name"} />
+                                <FarmName name={this.props.farmname} />
                             </td>
                         </tr>
                     </tbody>

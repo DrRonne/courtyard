@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import { ReactSession } from 'react-client-session';
-import { server_ip, server_port } from './Constants';
+import { server_ip, server_port, plow_cost, plow_exp } from './Constants';
 import TileEntity from './TileEntity';
 import loading_bar from './assets/world/loading_bar_bg.png'
 
@@ -70,6 +70,8 @@ export default class Field extends TileEntity {
                         queued: false,
                     };
                     this.props.setGridData(this.props.x, this.props.y, griddata);
+                    this.props.addCoins(-plow_cost);
+                    this.props.addExp(plow_exp);
                     const copystate = {...this.state};
                     copystate.plown = true;
                     copystate.actionstate = null;
@@ -123,6 +125,8 @@ export default class Field extends TileEntity {
                                     queued: false,
                                 };
                                 this.props.setGridData(this.props.x, this.props.y, griddata);
+                                this.props.addCoins(-data2.cost);
+                                this.props.addExp(data2.experience);
                                 copystate.seed_data = data2;
                                 const img = this.getFieldImage(data, true, copystate.planted, data2.time);
                                 copystate.imgPath = img;
