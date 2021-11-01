@@ -138,6 +138,19 @@ export default class Game extends Component {
             tile.setTileData(this.gamedata["farmdata"]["farm-grid"][tile.props.tiley][tile.props.tilex]);
             this.taskqueue.push({subject: tile, action: "plant", data: this.plantingSeed.name});
         }
+        else if (this.mode === "multi" && tile.action.current.state.seed && tile.action.current.state.planted && tile.action.current.state.seed_data &&
+        tile.action.current.state.planted + tile.action.current.state.seed_data.time <= Date.now() / 1000) {
+            this.gamedata["farmdata"]["farm-grid"][tile.props.tiley][tile.props.tilex] = {
+                type: "Field",
+                seed: this.gamedata["farmdata"]["farm-grid"][tile.props.tiley][tile.props.tilex]["seed"],
+                planted: this.gamedata["farmdata"]["farm-grid"][tile.props.tiley][tile.props.tilex]["planted"],
+                fertilized: this.gamedata["farmdata"]["farm-grid"][tile.props.tiley][tile.props.tilex]["fertilized"],
+                plown: true,
+                queued: true,
+            };
+            tile.setTileData(this.gamedata["farmdata"]["farm-grid"][tile.props.tiley][tile.props.tilex]);
+            this.taskqueue.push({subject: tile, action: "harvest"});
+        }
     }
 
     seedBuyClick(seedData) {
@@ -158,6 +171,11 @@ export default class Game extends Component {
                 else if (task.action === "plant") {
                     const tile = task.subject;
                     tile.action.current.plant(task.data);
+                    tile.action.current.setQueued(false);
+                }
+                else if (task.action === "harvest") {
+                    const tile = task.subject;
+                    tile.action.current.harvest();
                     tile.action.current.setQueued(false);
                 }
                 this.taskqueue.shift();

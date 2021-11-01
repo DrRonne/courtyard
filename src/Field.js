@@ -82,9 +82,9 @@ export default class Field extends TileEntity {
     }
 
     async plant(data) {
-        const plowtime = 1000; // ms
+        const planttime = 1000; // ms
         const steptime = 10; // ms
-        const stepsize = 100 / (plowtime / steptime);
+        const stepsize = 100 / (planttime / steptime);
         for (var i = 0; i < 100; i += stepsize) {
             const copystate = {...this.state};
             copystate.actionstate = "Planting seed";
@@ -132,6 +132,58 @@ export default class Field extends TileEntity {
                                 copystate.imgPath = img;
                                 this.setState(copystate);
                             });
+                });
+    }
+
+    async harvest() {
+        const harvesttime = 1000; // ms
+        const steptime = 10; // ms
+        const stepsize = 100 / (harvesttime / steptime);
+        for (var i = 0; i < 100; i += stepsize) {
+            const copystate = {...this.state};
+            copystate.actionstate = "Harvesting";
+            copystate.actionprogress = i;
+            this.setState(copystate);
+            await this.sleep(steptime);
+        }
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json',
+                       'Authentication': `${ReactSession.get("token") }`},
+            body: JSON.stringify({ x: this.props.x, y: this.props.y })
+          };
+          fetch(`http://${server_ip}:${server_port}/HarvestField`, requestOptions)
+                .then((r) => {
+                    if (r.ok)
+                    { return r.json(); }
+                    else
+                        {
+                            window.location.reload();
+                        }
+                    })
+                .then((respdata) =>{
+                    const copystate = {...this.state};
+                    copystate.seed = null;
+                    copystate.planted = null;
+                    copystate.actionstate = null;
+                    copystate.actionprogress = 0;
+                    const data2 = this.state.seed_data;
+                    const griddata = {
+                        type: "Field",
+                        seed: null,
+                        planted: null,
+                        fertilized: false,
+                        plown: false,
+                        queued: false,
+                    };
+                    this.props.setGridData(this.props.x, this.props.y, griddata);
+                    if (!respdata["withered"]) {
+                        this.props.addCoins(data2.sellprice);
+                    }
+                    copystate.seed_data = data2;
+                    const img = this.getFieldImage(null, false, null, null);
+                    copystate.imgPath = img;
+                    this.setState(copystate);
                 });
     }
 
