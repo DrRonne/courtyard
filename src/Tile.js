@@ -2,7 +2,8 @@ import React, { Component, createRef } from 'react'
 import grass from './assets/grass.png'
 import Blueprint from './Blueprint.js'
 import Field from './Field.js'
-import { field_length, field_width, tile_length, tile_width } from './Constants'
+import TreeEntity from './TreeEntity'
+import { field_length, field_width, tile_length, tile_width, tree_length, tree_width } from './Constants'
 // import Character from './Character.js'
 
 export default class Tile extends Component {
@@ -51,10 +52,18 @@ export default class Tile extends Component {
     render() {
         let tile_action;
         if (this.state.tiledata) {
-            tile_action = <Field x={this.props.tilex} y={this.props.tiley} ref={this.action} width={field_width} height={field_length} seed={this.state.tiledata.seed}
-                planted={this.state.tiledata.planted} plown={this.state.tiledata.plown} queued={this.state.tiledata.queued}
-                fieldClick={() => this.props.fieldClick(this)} setGridData={(x, y, data) => this.props.setGridData(x, y, data)}
-                addCoins={(amount) => this.props.addCoins(amount)} addExp={(amount) => this.props.addExp(amount)} />;
+            if (this.state.tiledata.type === "Field") {
+                tile_action = <Field x={this.props.tilex} y={this.props.tiley} ref={this.action} width={field_width} height={field_length} seed={this.state.tiledata.seed}
+                    planted={this.state.tiledata.planted} plown={this.state.tiledata.plown} queued={this.state.tiledata.queued}
+                    fieldClick={() => this.props.fieldClick(this)} setGridData={(x, y, data) => this.props.setGridData(x, y, data)}
+                    addCoins={(amount) => this.props.addCoins(amount)} addExp={(amount) => this.props.addExp(amount)} />;
+            }
+            else if (this.state.tiledata.type === "Tree") {
+                tile_action = <TreeEntity x={this.props.tilex} y={this.props.tiley} ref={this.action} width={tree_width} height={tree_length} tree={this.state.tiledata.tree}
+                    lastHarvested={this.state.tiledata.lastHarvested} queued={this.state.tiledata.lastHarvested}
+                    treeClick={() => this.props.treeClick(this)} setGridData={(x, y, data) => this.props.setGridData(x, y, data)}
+                    addCoins={(amount) => this.props.addCoins(amount)} />
+            }
         }
         let blueprint;
         if (this.state.placement_blueprint_height > 0 && this.state.placement_blueprint_width > 0) {

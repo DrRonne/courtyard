@@ -54,7 +54,7 @@ export default class Market extends Component {
                 shownsection = <Seeds seedBuyClick={(seedData) => this.props.seedBuyClick(seedData)} />
             }
             else if (this.state.sectionshow === "Trees") {
-                shownsection = <Trees treeBuyClick={(treeData) => this.props.seedBuyClick(treeData)} />
+                shownsection = <Trees treeBuyClick={(treeData) => this.props.treeBuyClick(treeData)} />
             }
             const div_styles = {
                 position: 'absolute',

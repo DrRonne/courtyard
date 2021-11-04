@@ -18,12 +18,12 @@ export default class TileEntity extends Component {
         }
     }
 
-    calcRenderHeight(w, h) {
-        return w / h * (this.props.width * tile_width);
+    calcRenderHeight(w, h, widthovershoot=1) {
+        return w / h * (this.props.width * widthovershoot * tile_width);
     }
 
-    calcRenderWidth(fieldWidth) {
-        return fieldWidth * tile_width;
+    calcRenderWidth(fieldWidth, widthovershoot=1) {
+        return fieldWidth * tile_width * widthovershoot;
     }
 
     calcHorizontalDisplacement(fieldWidth, renderWidth) {
