@@ -60,7 +60,7 @@ export default class Tile extends Component {
             }
             else if (this.state.tiledata.type === "Tree") {
                 tile_action = <TreeEntity x={this.props.tilex} y={this.props.tiley} ref={this.action} width={tree_width} height={tree_length} tree={this.state.tiledata.tree}
-                    lastHarvested={this.state.tiledata.lastHarvested} queued={this.state.tiledata.lastHarvested}
+                    lastHarvested={this.state.tiledata.lastHarvested} queued={this.state.tiledata.queued}
                     treeClick={() => this.props.treeClick(this)} setGridData={(x, y, data) => this.props.setGridData(x, y, data)}
                     addCoins={(amount) => this.props.addCoins(amount)} />
             }

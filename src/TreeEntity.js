@@ -23,7 +23,7 @@ export default class TreeEntity extends TileEntity {
             .then((r) => r.json())
             .then((data) =>{
                 this.state.tree_data = data;
-                this.updateTreeImage();
+                this.updateTreeImage(this.state.lastHarvested);
             });
     }
 
@@ -70,8 +70,8 @@ export default class TreeEntity extends TileEntity {
                         queued: false,
                     };
                     this.props.setGridData(this.props.x, this.props.y, griddata);
-                    copystate.seed_data = data2;
-                    const img = this.getTreeImage();
+                    copystate.tree_data = data2;
+                    const img = this.getTreeImage(respdata.lastHarvested);
                     copystate.imgPath = img;
                     this.setState(copystate);
                 });
@@ -135,9 +135,9 @@ export default class TreeEntity extends TileEntity {
         this.setState(copystate);
     }
 
-    getTreeImage() {
+    getTreeImage(lastHarvested) {
         let newimg;
-        if (this.state.lastHarvested + this.state.tree_data.time < (Date.now() / 1000)) {
+        if (lastHarvested + this.state.tree_data.time < (Date.now() / 1000)) {
             newimg = "/assets/trees/" + this.state.tree + "/" + this.state.tree + "2.png"
         }
         else {
@@ -146,8 +146,8 @@ export default class TreeEntity extends TileEntity {
         return newimg;
     }
 
-    updateTreeImage() {
-        const newimg = this.getTreeImage();
+    updateTreeImage(lastHarvested) {
+        const newimg = this.getTreeImage(lastHarvested);
         const copystate = {...this.state};
         copystate.imgPath = newimg;
         this.setState(copystate);
