@@ -9,7 +9,7 @@ export default class Experience extends Component {
         this.state = {
             level: this.props.level,
             exp: this.props.exp,
-            exp_required: data[this.props.level+1] - data[this.props.level],
+            exp_required: data[this.props.level] - data[this.props.level - 1],
         }
     }
 
@@ -17,7 +17,7 @@ export default class Experience extends Component {
         this.setState({
             level: newlevel,
             exp: newexp,
-            exp_required: data[newlevel+1] - data[newlevel],
+            exp_required: data[newlevel] - data[newlevel - 1],
         });
     }
 
@@ -31,7 +31,7 @@ export default class Experience extends Component {
     }
 
     render() {
-        const progress = (this.state.exp - data[this.state.level]) / this.state.exp_required * 100;
+        const progress = (this.state.exp - data[this.state.level - 1]) / this.state.exp_required * 100;
         const div_styles = {
             position: 'relative',
             margin: 20,
