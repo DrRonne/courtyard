@@ -24,20 +24,49 @@ export default class LoginForm extends Component {
     }
 
     render() {
+        const table_style = {
+            backgroundColor: '#ccb291',
+            borderRadius: 10,
+            border: '3px solid #8b7351',
+            marginLeft: 'auto',
+            marginRight: 'auto',
+            position: 'relative',
+        }
+        const text_styles = {
+            fontFamily: "Comic Sans MS",
+            color: "#513d1a",
+            fontSize: 25,
+        }
+        const button_styles = {
+            backgroundColor: '#80c143',
+            borderRadius: 10,
+            border: '3px solid #126713',
+            display: 'table',
+            margin: '0 auto',
+            fontFamily: "Comic Sans MS",
+            fontSize: 25,
+            color: 'white',
+        }
+        const box_styles = {
+            borderRadius: 10,
+            border: '3px solid #787063',
+            marginLeft: 'auto',
+            marginRight: 'auto',
+            position: 'relative',
+            fontSize: 20,
+        }
         return (
             <div>
-                <table>
+                <table style={table_style}>
                     <tbody>
                         <tr>
-                            <td>email:</td>
-                            <td><input type="text" onChange={this.updateEmail} /></td>
+                            <td><span style={text_styles}><strong>email:</strong></span><br /><input type="text" style={box_styles} onChange={this.updateEmail} /></td>
                         </tr>
                         <tr>
-                            <td>password:</td>
-                            <td><input type="password" onChange={this.updatePassword} /></td>
+                            <td><span style={text_styles}><strong>password:</strong></span><br /><input type="password" style={box_styles} onChange={this.updatePassword} /></td>
                         </tr>
                         <tr>
-                            <td><button onClick={this.onClick}>Login</button></td>
+                            <td><button style={button_styles} onClick={this.onClick}>Login</button></td>
                         </tr>
                     </tbody>
                 </table>
