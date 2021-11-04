@@ -13,6 +13,7 @@ import TractorsButton from './SectionButtons/TractorsButton'
 
 import Seeds from './Sections/Seeds'
 import Trees from './Sections/Trees'
+import Animals from './Sections/Animals'
 
 export default class Market extends Component {
     constructor(props) {
@@ -47,6 +48,13 @@ export default class Market extends Component {
         });
     }
 
+    onAnimalsButtonClick() {
+        this.setState({
+            visible: this.state.visible,
+            sectionshow: "Animals",
+        });
+    }
+
     render() {
         if (this.state.visible) {
             let shownsection;
@@ -55,6 +63,9 @@ export default class Market extends Component {
             }
             else if (this.state.sectionshow === "Trees") {
                 shownsection = <Trees treeBuyClick={(treeData) => this.props.treeBuyClick(treeData)} />
+            }
+            else if (this.state.sectionshow === "Animals") {
+                shownsection = <Animals animalBuyClick={(animalData) => this.props.animalBuyClick(animalData)} />
             }
             const div_styles = {
                 position: 'absolute',
@@ -94,7 +105,7 @@ export default class Market extends Component {
                             <tr>
                                 <td><SeedsButton onSeedsButtonClick={() => {this.onSeedsButtonClick()}} /></td>
                                 <td><TreesButton onTreesButtonClick={() => {this.onTreesButtonClick()}} /></td>
-                                <td><AnimalsButton /></td>
+                                <td><AnimalsButton onAnimalsButtonClick={() => {this.onAnimalsButtonClick()}} /></td>
                                 <td><BuildingsButton /></td>
                                 <td><DecorationsButton /></td>
                                 <td><ExpandButton /></td>
