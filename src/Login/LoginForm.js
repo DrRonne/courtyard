@@ -24,6 +24,9 @@ export default class LoginForm extends Component {
     }
 
     render() {
+        const div_styles = {
+            margin: 10,
+        }
         const table_style = {
             backgroundColor: '#ccb291',
             borderRadius: 10,
@@ -56,7 +59,7 @@ export default class LoginForm extends Component {
             fontSize: 20,
         }
         return (
-            <div>
+            <div style={div_styles}>
                 <table style={table_style}>
                     <tbody>
                         <tr>
