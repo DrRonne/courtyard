@@ -4,26 +4,25 @@ import { server_ip, server_port, tile_length } from './Constants';
 import TileEntity from './TileEntity';
 import loading_bar from './assets/world/loading_bar_bg.png'
 
-export default class TreeEntity extends TileEntity {
+export default class AnimalEntity extends TileEntity {
     constructor(props) {
         super(props);
         this.imgElement = React.createRef();
+        this.imgPath = "/assets/animals/" + this.props.animal + "/" + this.props.animal + "_icon.png"
         this.state = {
             ...this.state,
-            imgPath: null,
-            tree: this.props.tree,
+            animal: this.props.animal,
             lastHarvested: this.props.lastHarvested,
-            tree_data: null,
+            animal_data: null,
             queued: this.props.queued,
             actionstate: null,
             actionprogress: 0,
         };
         // THIS IS DATA THAT SHOULD BE RETRIEVED FROM SOME API
-        fetch(`/assets/trees/${this.props.tree}/${this.props.tree}_properties.json`)
+        fetch(`/assets/animals/${this.props.animal}/${this.props.animal}_properties.json`)
             .then((r) => r.json())
             .then((data) =>{
-                this.state.tree_data = data;
-                this.updateTreeImage(this.state.lastHarvested);
+                this.state.animal_data = data;
             });
     }
 
@@ -31,13 +30,13 @@ export default class TreeEntity extends TileEntity {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    async plant() {
+    async place() {
         const planttime = 1000; // ms
         const steptime = 10; // ms
         const stepsize = 100 / (planttime / steptime);
         for (var i = 0; i < 100; i += stepsize) {
             const copystate = {...this.state};
-            copystate.actionstate = "Planting tree";
+            copystate.actionstate = "Placing animal";
             copystate.actionprogress = i;
             this.setState(copystate);
             await this.sleep(steptime);
@@ -46,9 +45,9 @@ export default class TreeEntity extends TileEntity {
             method: 'POST',
             headers: { 'Content-Type': 'application/json',
                        'Authentication': `${ReactSession.get("token") }`},
-            body: JSON.stringify({ x: this.props.x, y: this.props.y, tree: this.props.tree })
+            body: JSON.stringify({ x: this.props.x, y: this.props.y, animal: this.props.animal })
           };
-          fetch(`http://${server_ip}:${server_port}/PlantTree`, requestOptions)
+          fetch(`http://${server_ip}:${server_port}/PlaceAnimal`, requestOptions)
                 .then((r) => {
                     if (r.ok)
                     { return r.json(); }
@@ -62,17 +61,15 @@ export default class TreeEntity extends TileEntity {
                     copystate.lastHarvested = respdata.lastHarvested;
                     copystate.actionstate = null;
                     copystate.actionprogress = 0;
-                    const data2 = this.state.tree_data;
+                    const data2 = this.state.animal_data;
                     const griddata = {
-                        type: "Tree",
-                        tree: this.state.tree,
+                        type: "Animal",
+                        animal: this.state.animal,
                         lastHarvested: respdata.lastHarvested,
                         queued: false,
                     };
                     this.props.setGridData(this.props.x, this.props.y, griddata);
-                    copystate.tree_data = data2;
-                    const img = this.getTreeImage(respdata.lastHarvested);
-                    copystate.imgPath = img;
+                    copystate.animal_data = data2;
                     this.setState(copystate);
                 });
     }
@@ -94,7 +91,7 @@ export default class TreeEntity extends TileEntity {
                        'Authentication': `${ReactSession.get("token") }`},
             body: JSON.stringify({ x: this.props.x, y: this.props.y })
           };
-          fetch(`http://${server_ip}:${server_port}/HarvestTree`, requestOptions)
+          fetch(`http://${server_ip}:${server_port}/HarvestAnimal`, requestOptions)
                 .then((r) => {
                     if (r.ok)
                     { return r.json(); }
@@ -108,18 +105,16 @@ export default class TreeEntity extends TileEntity {
                     copystate.lastHarvested = respdata.lastHarvested;
                     copystate.actionstate = null;
                     copystate.actionprogress = 0;
-                    const data2 = this.state.tree_data;
+                    const data2 = this.state.animal_data;
                     const griddata = {
-                        type: "Tree",
-                        tree: this.state.tree,
+                        type: "Animal",
+                        animal: this.state.animal,
                         lastHarvested: respdata.lastHarvested,
                         queued: false,
                     };
                     this.props.setGridData(this.props.x, this.props.y, griddata);
                     this.props.addCoins(data2.harvestcoins);
-                    copystate.tree_data = data2;
-                    const img = this.getTreeImage(respdata.lastHarvested);
-                    copystate.imgPath = img;
+                    copystate.animal_data = data2;
                     this.setState(copystate);
                 });
     }
@@ -127,24 +122,6 @@ export default class TreeEntity extends TileEntity {
     setQueued(queued) {
         const copystate = {...this.state};
         copystate.queued = queued;
-        this.setState(copystate);
-    }
-
-    getTreeImage(lastHarvested) {
-        let newimg;
-        if (lastHarvested + this.state.tree_data.time < (Date.now() / 1000)) {
-            newimg = "/assets/trees/" + this.state.tree + "/" + this.state.tree + "2.png"
-        }
-        else {
-            newimg = "/assets/trees/" + this.state.tree + "/" + this.state.tree + "1.png"
-        }
-        return newimg;
-    }
-
-    updateTreeImage(lastHarvested) {
-        const newimg = this.getTreeImage(lastHarvested);
-        const copystate = {...this.state};
-        copystate.imgPath = newimg;
         this.setState(copystate);
     }
 
@@ -208,12 +185,12 @@ export default class TreeEntity extends TileEntity {
         }
         return (
             <Fragment>
-                <img ref={this.imgElement} class="TreeImg" style={styles} src={this.state.imgPath} alt=""
-                    onClick={() => this.props.treeClick()}
+                <img ref={this.imgElement} class="AnimalImg" style={styles} src={this.imgPath} alt=""
+                    onClick={() => this.props.animalClick()}
                     onLoad={() => {
                         const copystate = {...this.state};
-                        copystate.renderHeight = this.calcRenderHeight(this.imgElement.current.naturalHeight, this.imgElement.current.naturalWidth, 1.5);
-                        copystate.renderWidth = this.calcRenderWidth(this.props.width, 1.5);
+                        copystate.renderHeight = this.calcRenderHeight(this.imgElement.current.naturalHeight, this.imgElement.current.naturalWidth);
+                        copystate.renderWidth = this.calcRenderWidth(this.props.width);
                         copystate.horizontalDisplacement = this.calcHorizontalDisplacement(this.props.width, copystate.renderWidth);
                         copystate.verticalDisplacement = this.calcVerticalDisplacement(copystate.renderHeight) - tile_length/2;
                         this.setState(copystate);

@@ -3,6 +3,7 @@ import grass from './assets/grass.png'
 import Blueprint from './Blueprint.js'
 import Field from './Field.js'
 import TreeEntity from './TreeEntity'
+import AnimalEntity from './AnimalEntity'
 import { field_length, field_width, tile_length, tile_width, tree_length, tree_width } from './Constants'
 // import Character from './Character.js'
 
@@ -62,6 +63,12 @@ export default class Tile extends Component {
                 tile_action = <TreeEntity x={this.props.tilex} y={this.props.tiley} ref={this.action} width={tree_width} height={tree_length} tree={this.state.tiledata.tree}
                     lastHarvested={this.state.tiledata.lastHarvested} queued={this.state.tiledata.queued}
                     treeClick={() => this.props.treeClick(this)} setGridData={(x, y, data) => this.props.setGridData(x, y, data)}
+                    addCoins={(amount) => this.props.addCoins(amount)} />
+            }
+            else if (this.state.tiledata.type === "Animal") {
+                tile_action = <AnimalEntity x={this.props.tilex} y={this.props.tiley} ref={this.action} width={tree_width} height={tree_length} animal={this.state.tiledata.animal}
+                    lastHarvested={this.state.tiledata.lastHarvested} queued={this.state.tiledata.queued}
+                    animalClick={() => this.props.animalClick(this)} setGridData={(x, y, data) => this.props.setGridData(x, y, data)}
                     addCoins={(amount) => this.props.addCoins(amount)} />
             }
         }

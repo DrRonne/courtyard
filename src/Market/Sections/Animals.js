@@ -33,32 +33,38 @@ export default class Animals extends Component {
         let animal1Elem;
         if (data.length > this.state.page*6) {
             const animal1 = data[this.state.page*6]
-            animal1Elem = <Animal name={animal1.name} sell={animal1.sellprice} time={animal1.time} price={animal1.cost} animalBuyClick={(animalData) => this.props.animalBuyClick(animalData)} />
+            animal1Elem = <Animal name={animal1.name} sell={animal1.sellprice} time={animal1.time} price={animal1.cost} width={animal1.width} length={animal1.length}
+                animalBuyClick={(animalData) => this.props.animalBuyClick(animalData)} />
         }
         let animal2Elem;
         if (data.length > this.state.page*6 + 1) {
             const animal2 = data[this.state.page*6 + 1]
-            animal2Elem = <Animal name={animal2.name} sell={animal2.sellprice} time={animal2.time} price={animal2.cost} animalBuyClick={(animalData) => this.props.animalBuyClick(animalData)} />
+            animal2Elem = <Animal name={animal2.name} sell={animal2.sellprice} time={animal2.time} price={animal2.cost} width={animal2.width} length={animal2.length}
+                animalBuyClick={(animalData) => this.props.animalBuyClick(animalData)} />
         }
         let animal3Elem;
         if (data.length > this.state.page*6 + 2) {
             const animal3 = data[this.state.page*6 + 2]
-            animal3Elem = <Animal name={animal3.name} sell={animal3.sellprice} time={animal3.time} price={animal3.cost} animalBuyClick={(animalData) => this.props.animalBuyClick(animalData)} />
+            animal3Elem = <Animal name={animal3.name} sell={animal3.sellprice} time={animal3.time} price={animal3.cost} width={animal3.width} length={animal3.length}
+                animalBuyClick={(animalData) => this.props.animalBuyClick(animalData)} />
         }
         let animal4Elem;
         if (data.length > this.state.page*6 + 3) {
             const animal4 = data[this.state.page*6 + 3]
-            animal4Elem = <Animal name={animal4.name} sell={animal4.sellprice} time={animal4.time} price={animal4.cost} animalBuyClick={(animalData) => this.props.animalBuyClick(animalData)} />
+            animal4Elem = <Animal name={animal4.name} sell={animal4.sellprice} time={animal4.time} price={animal4.cost} width={animal4.width} length={animal4.length}
+                animalBuyClick={(animalData) => this.props.animalBuyClick(animalData)} />
         }
         let animal5Elem;
         if (data.length > this.state.page*6 + 4) {
             const animal5 = data[this.state.page*6 + 4]
-            animal5Elem = <Animal name={animal5.name} sell={animal5.sellprice} time={animal5.time} price={animal5.cost} animalBuyClick={(animalData) => this.props.animalBuyClick(animalData)} />
+            animal5Elem = <Animal name={animal5.name} sell={animal5.sellprice} time={animal5.time} price={animal5.cost} width={animal5.width} length={animal5.length}
+            animalBuyClick={(animalData) => this.props.animalBuyClick(animalData)} />
         }
         let animal6Elem;
         if (data.length > this.state.page*6 + 5) {
             const animal6 = data[this.state.page*6 + 5]
-            animal6Elem = <Animal name={animal6.name} sell={animal6.sellprice} time={animal6.time} price={animal6.cost} animalBuyClick={(animalData) => this.props.animalBuyClick(animalData)} />
+            animal6Elem = <Animal name={animal6.name} sell={animal6.sellprice} time={animal6.time} price={animal6.cost} width={animal6.width} length={animal6.length}
+            animalBuyClick={(animalData) => this.props.animalBuyClick(animalData)} />
         }
         const div_styles = {
             position: 'absolute',

@@ -102,6 +102,16 @@ export default class Game extends Component {
                 tile.setBlueprint(tree_width, tree_length, true);
             }
         }
+        else if (this.mode === "placingAnimal") {
+            const animal_width = this.placingAnimal.width;
+            const animal_length = this.placingAnimal.length;
+            if (!this.checkTilesTaken(tile.props.tilex, tile.props.tiley, animal_width, animal_length)) {
+                tile.setBlueprint(animal_width, animal_length, false);
+            }
+            else {
+                tile.setBlueprint(animal_width, animal_length, true);
+            }
+        }
     }
 
     tileClick(tile) {
@@ -129,6 +139,20 @@ export default class Game extends Component {
                 }
                 tile.setTileData(this.gamedata["farmdata"]["farm-grid"][tile.props.tiley][tile.props.tilex]);
                 this.taskqueue.push({subject: tile, action: "plant tree"});
+            }
+        }
+        else if (this.mode === "placingAnimal") {
+            const animal_width = this.placingAnimal.width;
+            const animal_length = this.placingAnimal.length;
+            if (this.checkTilesTaken(tile.props.tilex, tile.props.tiley, animal_width, animal_length)) {
+                this.gamedata["farmdata"]["farm-grid"][tile.props.tiley][tile.props.tilex] = {
+                    type: "Animal",
+                    animal: this.placingAnimal.name,
+                    lastHarvested: null,
+                    queued: true,
+                }
+                tile.setTileData(this.gamedata["farmdata"]["farm-grid"][tile.props.tiley][tile.props.tilex]);
+                this.taskqueue.push({subject: tile, action: "place animal"});
             }
         }
     }
@@ -185,6 +209,12 @@ export default class Game extends Component {
         this.market.current.setVisible(false);
     }
 
+    animalBuyClick(animalData) {
+        this.mode = "placingAnimal";
+        this.placingAnimal = animalData;
+        this.market.current.setVisible(false);
+    }
+
     componentDidMount() {
         setInterval(() => {
             if (this.taskqueue.length > 0) {
@@ -207,6 +237,11 @@ export default class Game extends Component {
                 else if (task.action === "plant tree") {
                     const tile = task.subject;
                     tile.action.current.plant();
+                    tile.action.current.setQueued(false);
+                }
+                else if (task.action === "place animal") {
+                    const tile = task.subject;
+                    tile.action.current.place();
                     tile.action.current.setQueued(false);
                 }
                 this.taskqueue.shift();
@@ -241,7 +276,8 @@ export default class Game extends Component {
                     <Topbar ref={this.topbar} coins={this.gamedata["coins"]} cash={this.gamedata["cash"]} level={this.gamedata["level"]}
                         experience={this.gamedata["experience"]} farmname={this.gamedata["farmdata"]["farm-name"]} />
                     <Menu hoeClick={() => this.hoeButtonClick()} multiClick={() => this.multiButtonClick()} marketClick={() => this.marketButtonClick()} />
-                    <Market ref={this.market} seedBuyClick={(seedData) => this.seedBuyClick(seedData)} treeBuyClick={(treeData) => this.treeBuyClick(treeData)} />
+                    <Market ref={this.market} seedBuyClick={(seedData) => this.seedBuyClick(seedData)} treeBuyClick={(treeData) => this.treeBuyClick(treeData)}
+                        animalBuyClick={(animalData) => this.animalBuyClick(animalData)} />
                 </div>
             )
         }
