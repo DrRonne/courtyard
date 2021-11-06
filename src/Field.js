@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import { ReactSession } from 'react-client-session';
-import { server_ip, server_port, plow_cost, plow_exp, wither_factor } from './Constants';
+import { server_ip, server_port, plow_cost, plow_exp, wither_factor, tile_length, tile_width, field_length, field_width } from './Constants';
 import TileEntity from './TileEntity';
 import loading_bar from './assets/world/loading_bar_bg.png'
 
@@ -239,6 +239,7 @@ export default class Field extends TileEntity {
             width:  this.state.renderWidth,
             height: this.state.renderHeight,
             transform: `translate(${this.state.horizontalDisplacement}px, ${this.state.verticalDisplacement}px)`,
+            pointerEvents: 'none',
         };
         if (this.state.queued || this.state.actionstate) {
             styles.opacity = 0.5;
@@ -290,10 +291,23 @@ export default class Field extends TileEntity {
                 </div>
             </div>
         }
+        const skewangle = Math.atan((tile_length * field_length / 2) / (tile_width * field_width / 2));
+        const skewangle2 = Math.atan((tile_width * field_width / 2) / (tile_length * field_length / 2));
+        const calcwidth = Math.sqrt(Math.pow(tile_width * field_width / 2, 2) + Math.pow(tile_length * field_length / 2, 2)) * Math.cos(skewangle);
+        const calcheight = Math.sqrt(Math.pow(tile_width * field_width / 2, 2) + Math.pow(tile_length * field_length / 2, 2)) * Math.cos(skewangle2)
+        const interact_div_styles = {
+            position: 'absolute',
+            width: calcwidth,
+            height: calcheight,
+            backgroundColor: 'green',
+            transform: `skew(-${skewangle2}rad, ${skewangle}rad) translate(${this.state.horizontalDisplacement + 10}px, ${this.state.verticalDisplacement + calcheight + 5}px)`,
+            opacity: 0,
+            zIndex: 4,
+        }
         return (
             <Fragment>
+                <div style={interact_div_styles} onClick={() => this.props.fieldClick()} />
                 <img ref={this.imgElement} class="FieldImg" style={styles} src={this.state.imgPath} alt=""
-                    onClick={() => this.props.fieldClick()}
                     onLoad={() => {
                         // Correctly scale and transform the image so it fits in the field
                         const copystate = {...this.state};

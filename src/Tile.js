@@ -87,12 +87,26 @@ export default class Tile extends Component {
             // backgroundColor: 'red',
             // opacity: 0.5,
         };
+        const skewangle = Math.atan((tile_length / 2) / (tile_width / 2));
+        const skewangle2 = Math.atan((tile_width / 2) / (tile_length / 2));
+        const calcwidth = Math.sqrt(Math.pow(tile_width / 2, 2) + Math.pow(tile_length / 2, 2)) * Math.cos(skewangle);
+        const calcheight = Math.sqrt(Math.pow(tile_width / 2, 2) + Math.pow(tile_length / 2, 2)) * Math.cos(skewangle2)
+        const interact_div_styles = {
+            position: 'absolute',
+            width: calcwidth,
+            height: calcheight,
+            backgroundColor: 'green',
+            transform: `skew(-${skewangle2}rad, ${skewangle}rad) translate(${calcwidth / 2}px, 0px)`,
+            opacity: 0,
+            zIndex: 4,
+        }
         return (
             <div class="GrassTile" style={styles}>
+                <div style={interact_div_styles} onMouseEnter={() => this.props.onMouseEnter(this)} onMouseLeave={() => this.onMouseLeave()} onClick={() => this.props.onClick(this)} />
                 {/* {character} */}
                 {tile_action}
                 {blueprint}
-                <img class="GrassImg" style={{zIndex:1, position:'relative'}} src={grass} onMouseEnter={() => this.props.onMouseEnter(this)} onMouseLeave={() => this.onMouseLeave()} onClick={() => this.props.onClick(this)} alt=""/>
+                <img class="GrassImg" style={{zIndex:1, position:'relative', pointerEvents: 'none'}} src={grass} alt=""/>
             </div>
         )
     }

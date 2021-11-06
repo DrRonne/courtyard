@@ -112,6 +112,16 @@ export default class Game extends Component {
                 tile.setBlueprint(animal_width, animal_length, true);
             }
         }
+        else if (this.mode === "placingDecoration") {
+            const deco_width = this.placingDecoration.width;
+            const deco_length = this.placingDecoration.length;
+            if (!this.checkTilesTaken(tile.props.tilex, tile.props.tiley, deco_width, deco_length)) {
+                tile.setBlueprint(deco_width, deco_length, false);
+            }
+            else {
+                tile.setBlueprint(deco_width, deco_length, true);
+            }
+        }
     }
 
     tileClick(tile) {
@@ -153,6 +163,19 @@ export default class Game extends Component {
                 }
                 tile.setTileData(this.gamedata["farmdata"]["farm-grid"][tile.props.tiley][tile.props.tilex]);
                 this.taskqueue.push({subject: tile, action: "place animal"});
+            }
+        }
+        else if (this.mode === "placingDecoration") {
+            const deco_width = this.placingDecoration.width;
+            const deco_length = this.placingDecoration.length;
+            if (this.checkTilesTaken(tile.props.tilex, tile.props.tiley, deco_width, deco_length)) {
+                this.gamedata["farmdata"]["farm-grid"][tile.props.tiley][tile.props.tilex] = {
+                    type: "Decoration",
+                    decoration: this.placingDecoration.name,
+                    queued: true,
+                }
+                tile.setTileData(this.gamedata["farmdata"]["farm-grid"][tile.props.tiley][tile.props.tilex]);
+                this.taskqueue.push({subject: tile, action: "place decoration"});
             }
         }
     }
@@ -215,6 +238,13 @@ export default class Game extends Component {
         this.market.current.setVisible(false);
     }
 
+    decorationBuyClick(decorationData) {
+        this.mode = "placingDecoration";
+        console.log(decorationData);
+        this.placingDecoration = decorationData;
+        this.market.current.setVisible(false);
+    }
+
     componentDidMount() {
         setInterval(() => {
             if (this.taskqueue.length > 0) {
@@ -240,6 +270,11 @@ export default class Game extends Component {
                     tile.action.current.setQueued(false);
                 }
                 else if (task.action === "place animal") {
+                    const tile = task.subject;
+                    tile.action.current.place();
+                    tile.action.current.setQueued(false);
+                }
+                else if (task.action === "place decoration") {
                     const tile = task.subject;
                     tile.action.current.place();
                     tile.action.current.setQueued(false);
@@ -277,7 +312,7 @@ export default class Game extends Component {
                         experience={this.gamedata["experience"]} farmname={this.gamedata["farmdata"]["farm-name"]} />
                     <Menu hoeClick={() => this.hoeButtonClick()} multiClick={() => this.multiButtonClick()} marketClick={() => this.marketButtonClick()} />
                     <Market ref={this.market} seedBuyClick={(seedData) => this.seedBuyClick(seedData)} treeBuyClick={(treeData) => this.treeBuyClick(treeData)}
-                        animalBuyClick={(animalData) => this.animalBuyClick(animalData)} />
+                        animalBuyClick={(animalData) => this.animalBuyClick(animalData)} decorationBuyClick={(decorationData) => this.decorationBuyClick(decorationData)} />
                 </div>
             )
         }
