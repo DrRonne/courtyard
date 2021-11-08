@@ -217,7 +217,7 @@ export default class TreeEntity extends TileEntity {
             height: calcheight,
             backgroundColor: 'green',
             transform: `skew(-${skewangle2}rad, ${skewangle}rad) translate(${this.state.horizontalDisplacement + calcwidth/2}px, ${-calcheight/2 + 5}px)`,
-            opacity: 0,
+            opacity: 0.5,
             zIndex: 4,
         }
         return (

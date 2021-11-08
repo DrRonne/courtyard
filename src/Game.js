@@ -180,6 +180,38 @@ export default class Game extends Component {
         }
     }
 
+    treeClick(tile) {
+        console.log("clicked tree");
+        console.log(this.mode === "multi", tile.action.current.state.tree, tile.action.current.state.lastHarvested, tile.action.current.state.tree_data,
+        tile.action.current.state.lastHarvested + tile.action.current.state.tree_data.time <= Date.now() / 1000)
+        if (this.mode === "multi" && tile.action.current.state.tree && tile.action.current.state.lastHarvested && tile.action.current.state.tree_data &&
+        tile.action.current.state.lastHarvested + tile.action.current.state.tree_data.time <= Date.now() / 1000) {
+            this.gamedata["farmdata"]["farm-grid"][tile.props.tiley][tile.props.tilex] = {
+                type: "Tree",
+                tree: this.gamedata["farmdata"]["farm-grid"][tile.props.tiley][tile.props.tilex]["tree"],
+                lastHarvested: this.gamedata["farmdata"]["farm-grid"][tile.props.tiley][tile.props.tilex]["lastHarvested"],
+                queued: true,
+            };
+            tile.setTileData(this.gamedata["farmdata"]["farm-grid"][tile.props.tiley][tile.props.tilex]);
+            this.taskqueue.push({subject: tile, action: "harvest tree"});
+        }
+    }
+
+    animalClick(tile) {
+        if (this.mode === "multi" && tile.action.current.state.animal_data.time &&
+        tile.action.current.state.animal && tile.action.current.state.lastHarvested && tile.action.current.state.animal_data &&
+        tile.action.current.state.lastHarvested + tile.action.current.state.animal_data.time <= Date.now() / 1000) {
+            this.gamedata["farmdata"]["farm-grid"][tile.props.tiley][tile.props.tilex] = {
+                type: "Animal",
+                tree: this.gamedata["farmdata"]["farm-grid"][tile.props.tiley][tile.props.tilex]["animal"],
+                lastHarvested: this.gamedata["farmdata"]["farm-grid"][tile.props.tiley][tile.props.tilex]["lastHarvested"],
+                queued: true,
+            };
+            tile.setTileData(this.gamedata["farmdata"]["farm-grid"][tile.props.tiley][tile.props.tilex]);
+            this.taskqueue.push({subject: tile, action: "harvest animal"});
+        }
+    }
+
     fieldClick(tile) {
         if (this.mode === "hoe" && !tile.action.current.state.plown) {
             this.gamedata["farmdata"]["farm-grid"][tile.props.tiley][tile.props.tilex] = {
@@ -279,6 +311,16 @@ export default class Game extends Component {
                     tile.action.current.place();
                     tile.action.current.setQueued(false);
                 }
+                else if (task.action === "harvest tree") {
+                    const tile = task.subject;
+                    tile.action.current.harvest();
+                    tile.action.current.setQueued(false);
+                }
+                else if (task.action === "harvest animal") {
+                    const tile = task.subject;
+                    tile.action.current.harvest();
+                    tile.action.current.setQueued(false);
+                }
                 this.taskqueue.shift();
             }
         }, 100);
@@ -306,6 +348,7 @@ export default class Game extends Component {
                         <TileGrid ref={this.tilegrid} characterPosX={0} characterPosY={0} characterTileX={this.characterTileX} characterTileY={this.characterTileY}
                             farmheight={this.gamedata["farmdata"]["farm-height"]} farmwidth={this.gamedata["farmdata"]["farm-height"]} farmgrid={this.gamedata["farmdata"]["farm-grid"]}
                             tileMouseHover={(tile) => this.tileMouseHover(tile)} tileClick={(tile) => this.tileClick(tile)} fieldClick={(tile) => this.fieldClick(tile)}
+                            treeClick={(tile) => this.treeClick(tile)} animalClick={(tile) => this.animalClick(tile)}
                             setGridData={(x, y, data) => this.setGridData(x, y, data)} addCoins={(amount) => this.addCoins(amount)} addExp={(amount) => this.addExp(amount)} />
                     </div>
                     <Topbar ref={this.topbar} coins={this.gamedata["coins"]} cash={this.gamedata["cash"]} level={this.gamedata["level"]}
