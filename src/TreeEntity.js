@@ -2,7 +2,6 @@ import React, { Fragment } from 'react'
 import { ReactSession } from 'react-client-session';
 import { server_ip, server_port, tile_length, tile_width, tree_length, tree_width } from './Constants';
 import TileEntity from './TileEntity';
-import loading_bar from './assets/world/loading_bar_bg.png'
 
 export default class TreeEntity extends TileEntity {
     constructor(props) {
@@ -173,20 +172,26 @@ export default class TreeEntity extends TileEntity {
             const inner_div_styles = {
                 position: 'relative',
                 pointerEvents: 'none',
+                width: '100%',
+                height: '100%',
             }
             const action_bg_styles = {
                 width: '100%',
                 height: '100%',
+                backgroundColor: '#007f46',
+                borderRadius: 10,
+                border: '3px solid #000',
                 zIndex: 1,
                 pointerEvents: 'none',
             };
             const action_bar_styles = {
                 position: 'absolute',
-                left: 1,
-                top: 1,
+                left: 3,
+                top: 3,
                 backgroundColor: '#42f54e',
-                height: 'calc(100% - 4px)',
-                width: `calc(${this.state.actionprogress}% - 4px)`,
+                borderRadius: 7,
+                height: '100%',
+                width: `${this.state.actionprogress}%`,
                 zIndex: 2,
                 pointerEvents: 'none',
             };
@@ -201,7 +206,7 @@ export default class TreeEntity extends TileEntity {
             }
             actiondiv = <div style={action_div_styles}>
                 <div style={inner_div_styles}>
-                    <img src={loading_bar} alt="" style={action_bg_styles}></img>
+                    <div style={action_bg_styles} />
                     <div style={action_bar_styles} />
                     <div style={action_text_styles}><strong>{this.state.actionstate}: {this.state.actionprogress}%</strong></div>
                 </div>
