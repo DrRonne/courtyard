@@ -76,7 +76,7 @@ export default class TileGrid extends Component {
                     row.push(<td><Tile ref={this.itemrefs[i][j]} key={uuidv4()} hasCharacter={false} characterPosX={0} characterPosY={0} tiley={i} tilex={j}
                         tiledata={this.props.farmgrid[i][j]} onMouseEnter={(tile) => this.props.tileMouseHover(tile)} onClick={(tile) => this.props.tileClick(tile)}
                         fieldClick={(tile) => this.props.fieldClick(tile)} treeClick={(tile) => this.props.treeClick(tile)} animalClick={(tile) => this.props.animalClick(tile)}
-                        setGridData={(x, y, data) => this.props.setGridData(x, y, data)}
+                        decorationClick={(tile) => this.props.decorationClick(tile)} setGridData={(x, y, data) => this.props.setGridData(x, y, data)}
                         addCoins={(amount) => this.props.addCoins(amount)} addExp={(amount) => this.props.addExp(amount)} /></td>);
                 // }
             }

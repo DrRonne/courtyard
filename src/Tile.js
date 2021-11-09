@@ -4,6 +4,7 @@ import Blueprint from './Blueprint.js'
 import Field from './Field.js'
 import TreeEntity from './TreeEntity'
 import AnimalEntity from './AnimalEntity'
+import DecorationEntity from './DecorationEntity'
 import { field_length, field_width, tile_length, tile_width, tree_length, tree_width } from './Constants'
 // import Character from './Character.js'
 
@@ -66,9 +67,15 @@ export default class Tile extends Component {
                     addCoins={(amount) => this.props.addCoins(amount)} />
             }
             else if (this.state.tiledata.type === "Animal") {
-                tile_action = <AnimalEntity x={this.props.tilex} y={this.props.tiley} ref={this.action} width={tree_width} height={tree_length} animal={this.state.tiledata.animal}
+                tile_action = <AnimalEntity x={this.props.tilex} y={this.props.tiley} ref={this.action} animal={this.state.tiledata.animal}
                     lastHarvested={this.state.tiledata.lastHarvested} queued={this.state.tiledata.queued}
                     animalClick={() => this.props.animalClick(this)} setGridData={(x, y, data) => this.props.setGridData(x, y, data)}
+                    addCoins={(amount) => this.props.addCoins(amount)} />
+            }
+            else if (this.state.tiledata.type === "Decoration") {
+                tile_action = <DecorationEntity x={this.props.tilex} y={this.props.tiley} ref={this.action}
+                    decoration={this.state.tiledata.decoration} queued={this.state.tiledata.queued}
+                    decorationClick={() => this.props.decorationClick(this)} setGridData={(x, y, data) => this.props.setGridData(x, y, data)}
                     addCoins={(amount) => this.props.addCoins(amount)} />
             }
         }

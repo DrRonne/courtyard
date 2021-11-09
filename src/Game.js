@@ -180,10 +180,11 @@ export default class Game extends Component {
         }
     }
 
+    decorationClick(tile) {
+        console.log("not implemented");
+    }
+
     treeClick(tile) {
-        console.log("clicked tree");
-        console.log(this.mode === "multi", tile.action.current.state.tree, tile.action.current.state.lastHarvested, tile.action.current.state.tree_data,
-        tile.action.current.state.lastHarvested + tile.action.current.state.tree_data.time <= Date.now() / 1000)
         if (this.mode === "multi" && tile.action.current.state.tree && tile.action.current.state.lastHarvested && tile.action.current.state.tree_data &&
         tile.action.current.state.lastHarvested + tile.action.current.state.tree_data.time <= Date.now() / 1000) {
             this.gamedata["farmdata"]["farm-grid"][tile.props.tiley][tile.props.tilex] = {
@@ -272,7 +273,6 @@ export default class Game extends Component {
 
     decorationBuyClick(decorationData) {
         this.mode = "placingDecoration";
-        console.log(decorationData);
         this.placingDecoration = decorationData;
         this.market.current.setVisible(false);
     }
@@ -348,7 +348,7 @@ export default class Game extends Component {
                         <TileGrid ref={this.tilegrid} characterPosX={0} characterPosY={0} characterTileX={this.characterTileX} characterTileY={this.characterTileY}
                             farmheight={this.gamedata["farmdata"]["farm-height"]} farmwidth={this.gamedata["farmdata"]["farm-height"]} farmgrid={this.gamedata["farmdata"]["farm-grid"]}
                             tileMouseHover={(tile) => this.tileMouseHover(tile)} tileClick={(tile) => this.tileClick(tile)} fieldClick={(tile) => this.fieldClick(tile)}
-                            treeClick={(tile) => this.treeClick(tile)} animalClick={(tile) => this.animalClick(tile)}
+                            treeClick={(tile) => this.treeClick(tile)} animalClick={(tile) => this.animalClick(tile)} decorationClick={(tile) => this.decorationClick(tile)}
                             setGridData={(x, y, data) => this.setGridData(x, y, data)} addCoins={(amount) => this.addCoins(amount)} addExp={(amount) => this.addExp(amount)} />
                     </div>
                     <Topbar ref={this.topbar} coins={this.gamedata["coins"]} cash={this.gamedata["cash"]} level={this.gamedata["level"]}

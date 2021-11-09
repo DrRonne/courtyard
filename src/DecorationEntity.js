@@ -4,28 +4,27 @@ import { server_ip, server_port, tile_length, tile_width } from './Constants';
 import TileEntity from './TileEntity';
 import loading_bar from './assets/world/loading_bar_bg.png'
 
-export default class AnimalEntity extends TileEntity {
+export default class DecorationEntity extends TileEntity {
     constructor(props) {
         super(props);
         this.imgElement = React.createRef();
-        this.imgPath = "/assets/animals/" + this.props.animal + "/" + this.props.animal + "_icon.png"
+        this.imgPath = "/assets/decorations/" + this.props.decoration + "/" + this.props.decoration + "_icon.png"
         this.state = {
             ...this.state,
-            animal: this.props.animal,
-            lastHarvested: this.props.lastHarvested,
+            decoration: this.props.decoration,
+            decoration_data: null,
             width: 1,
             length: 1,
-            animal_data: null,
             queued: this.props.queued,
             actionstate: null,
             actionprogress: 0,
         };
         // THIS IS DATA THAT SHOULD BE RETRIEVED FROM SOME API
-        fetch(`/assets/animals/${this.props.animal}/${this.props.animal}_properties.json`)
+        fetch(`/assets/decorations/${this.props.decoration}/${this.props.decoration}_properties.json`)
             .then((r) => r.json())
             .then((data) =>{
                 const statecopy = {...this.state};
-                statecopy.animal_data = data;
+                statecopy.decoration_data = data;
                 statecopy.width = data.width;
                 this.width = data.width;
                 statecopy.length = data.length;
@@ -34,6 +33,7 @@ export default class AnimalEntity extends TileEntity {
                     statecopy.renderWidth = this.calcRenderWidth(statecopy.width);
                     statecopy.horizontalDisplacement = this.calcHorizontalDisplacement(statecopy.width, statecopy.renderWidth);
                     statecopy.verticalDisplacement = this.calcVerticalDisplacement(statecopy.renderHeight) - tile_length/2;
+                    console.log(this.state.decoration, statecopy.width, statecopy.renderWidth);
                 }
                 this.setState(statecopy);
             });
@@ -49,7 +49,7 @@ export default class AnimalEntity extends TileEntity {
         const stepsize = 100 / (planttime / steptime);
         for (var i = 0; i < 100; i += stepsize) {
             const copystate = {...this.state};
-            copystate.actionstate = "Placing animal";
+            copystate.actionstate = "Placing decoration";
             copystate.actionprogress = i;
             this.setState(copystate);
             await this.sleep(steptime);
@@ -58,9 +58,9 @@ export default class AnimalEntity extends TileEntity {
             method: 'POST',
             headers: { 'Content-Type': 'application/json',
                        'Authentication': `${ReactSession.get("token") }`},
-            body: JSON.stringify({ x: this.props.x, y: this.props.y, animal: this.props.animal })
+            body: JSON.stringify({ x: this.props.x, y: this.props.y, decoration: this.props.decoration })
           };
-          fetch(`http://${server_ip}:${server_port}/PlaceAnimal`, requestOptions)
+          fetch(`http://${server_ip}:${server_port}/PlaceDecoration`, requestOptions)
                 .then((r) => {
                     if (r.ok)
                     { return r.json(); }
@@ -74,60 +74,15 @@ export default class AnimalEntity extends TileEntity {
                     copystate.lastHarvested = respdata.lastHarvested;
                     copystate.actionstate = null;
                     copystate.actionprogress = 0;
-                    const data2 = this.state.animal_data;
+                    const data2 = this.state.decoration_data;
                     const griddata = {
-                        type: "Animal",
-                        animal: this.state.animal,
+                        type: "Decoration",
+                        decoration: this.state.decoration,
                         lastHarvested: respdata.lastHarvested,
                         queued: false,
                     };
                     this.props.setGridData(this.props.x, this.props.y, griddata);
-                    copystate.animal_data = data2;
-                    this.setState(copystate);
-                });
-    }
-
-    async harvest() {
-        const harvesttime = 1000; // ms
-        const steptime = 10; // ms
-        const stepsize = 100 / (harvesttime / steptime);
-        for (var i = 0; i < 100; i += stepsize) {
-            const copystate = {...this.state};
-            copystate.actionstate = "Harvesting";
-            copystate.actionprogress = i;
-            this.setState(copystate);
-            await this.sleep(steptime);
-        }
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json',
-                       'Authentication': `${ReactSession.get("token") }`},
-            body: JSON.stringify({ x: this.props.x, y: this.props.y })
-          };
-          fetch(`http://${server_ip}:${server_port}/HarvestAnimal`, requestOptions)
-                .then((r) => {
-                    if (r.ok)
-                    { return r.json(); }
-                    else
-                        {
-                            window.location.reload();
-                        }
-                    })
-                .then((respdata) =>{
-                    const copystate = {...this.state};
-                    copystate.lastHarvested = respdata.lastHarvested;
-                    copystate.actionstate = null;
-                    copystate.actionprogress = 0;
-                    const data2 = this.state.animal_data;
-                    const griddata = {
-                        type: "Animal",
-                        animal: this.state.animal,
-                        lastHarvested: respdata.lastHarvested,
-                        queued: false,
-                    };
-                    this.props.setGridData(this.props.x, this.props.y, griddata);
-                    this.props.addCoins(data2.harvestcoins);
-                    copystate.animal_data = data2;
+                    copystate.decoration_data = data2;
                     this.setState(copystate);
                 });
     }
@@ -203,6 +158,7 @@ export default class AnimalEntity extends TileEntity {
         const calcheight = Math.sqrt(Math.pow(tile_width / 2, 2) + Math.pow(tile_length / 2, 2)) * Math.cos(skewangle2);
         const unbalance = this.state.width - this.state.length;
         var unbalance_vertical_move  = - tile_length * unbalance / 4;
+        // console.log(this.props.width, this.props.height)
         const interact_div_styles = {
             position: 'absolute',
             zIndex: 4,
@@ -214,8 +170,8 @@ export default class AnimalEntity extends TileEntity {
         };
         return (
             <Fragment>
-                <div style={interact_div_styles} onClick={() => this.props.animalClick()} />
-                <img ref={this.imgElement} class="AnimalImg" style={styles} src={this.imgPath} alt=""
+                <div style={interact_div_styles} onClick={() => this.props.decorationClick()} />
+                <img ref={this.imgElement} class="DecorationImg" style={styles} src={this.imgPath} alt=""
                     onLoad={() => {
                         this.width = this.state.width;
                         const d = this.width - 1;

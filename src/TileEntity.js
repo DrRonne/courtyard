@@ -4,9 +4,10 @@ import { tile_length, tile_width } from './Constants';
 export default class TileEntity extends Component {
     constructor(props) {
         super(props);
-        const d = this.props.width - 1;
+        this.width = this.props.width;
+        const d = this.width - 1;
         const displacement = Math.pow(2, 1-d)*(Math.pow(2, d) + 2);
-        this.renderWidth = this.props.width * tile_width;
+        this.renderWidth = this.width * tile_width;
         this.renderHeight = this.props.imgheight / this.props.imgwidth * this.renderWidth;
         this.horizontalDisplacement = -this.renderWidth / displacement;
         this.verticalDisplacement = -this.renderHeight + tile_length;
@@ -19,7 +20,7 @@ export default class TileEntity extends Component {
     }
 
     calcRenderHeight(w, h, widthovershoot=1) {
-        return w / h * (this.props.width * widthovershoot * tile_width);
+        return w / h * (this.width * widthovershoot * tile_width);
     }
 
     calcRenderWidth(fieldWidth, widthovershoot=1) {
