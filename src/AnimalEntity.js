@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import { ReactSession } from 'react-client-session';
-import { server_ip, server_port, tile_length } from './Constants';
+import { server_ip, server_port, tile_length, tile_width } from './Constants';
 import TileEntity from './TileEntity';
 import loading_bar from './assets/world/loading_bar_bg.png'
 
@@ -126,12 +126,14 @@ export default class AnimalEntity extends TileEntity {
     }
 
     render() {
+        console.log(this.props.width, this.props.height);
         const styles = { 
             zIndex: 2,
             position: 'absolute',
             width:  this.state.renderWidth,
             height: this.state.renderHeight,
             transform: `translate(${this.state.horizontalDisplacement}px, ${this.state.verticalDisplacement}px)`,
+            pointerEvents: 'none',
         };
         if (this.state.queued || this.state.actionstate) {
             styles.opacity = 0.5;
@@ -183,10 +185,25 @@ export default class AnimalEntity extends TileEntity {
                 </div>
             </div>
         }
+        const skewangle = Math.atan((tile_length / 2) / (tile_width / 2));
+        const skewangle2 = Math.atan((tile_width / 2) / (tile_length / 2));
+        const calcwidth = Math.sqrt(Math.pow(tile_width / 2, 2) + Math.pow(tile_length / 2, 2)) * Math.cos(skewangle);
+        const calcheight = Math.sqrt(Math.pow(tile_width / 2, 2) + Math.pow(tile_length / 2, 2)) * Math.cos(skewangle2);
+        const unbalance = this.props.width - this.props.height;
+        var unbalance_vertical_move  = - tile_length * unbalance / 4;
+        const interact_div_styles = {
+            position: 'absolute',
+            zIndex: 4,
+            width: calcwidth,
+            height: calcheight,
+            backgroundColor: 'green',
+            opacity: 0,
+            transform: `translate(${calcwidth/2 + unbalance*calcwidth/2}px, ${-calcheight/2 - tile_length * (this.props.height - 2) / 2 + unbalance_vertical_move}px) skew(-${skewangle2}rad, ${skewangle}rad) scale(${this.props.height}, ${this.props.width})`,
+        };
         return (
             <Fragment>
+                <div style={interact_div_styles} onClick={() => this.props.animalClick()} />
                 <img ref={this.imgElement} class="AnimalImg" style={styles} src={this.imgPath} alt=""
-                    onClick={() => this.props.animalClick()}
                     onLoad={() => {
                         const copystate = {...this.state};
                         copystate.renderHeight = this.calcRenderHeight(this.imgElement.current.naturalHeight, this.imgElement.current.naturalWidth);

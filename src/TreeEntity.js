@@ -207,19 +207,21 @@ export default class TreeEntity extends TileEntity {
                 </div>
             </div>
         }
-        const skewangle = Math.atan((tile_length * tree_length / 2) / (tile_width * tree_width / 2));
-        const skewangle2 = Math.atan((tile_width * tree_width / 2) / (tile_length * tree_length / 2));
-        const calcwidth = Math.sqrt(Math.pow(tile_width * tree_width / 2, 2) + Math.pow(tile_length * tree_length / 2, 2)) * Math.cos(skewangle);
-        const calcheight = Math.sqrt(Math.pow(tile_width * tree_width / 2, 2) + Math.pow(tile_length * tree_length / 2, 2)) * Math.cos(skewangle2)
+        const skewangle = Math.atan((tile_length / 2) / (tile_width / 2));
+        const skewangle2 = Math.atan((tile_width / 2) / (tile_length / 2));
+        const calcwidth = Math.sqrt(Math.pow(tile_width / 2, 2) + Math.pow(tile_length / 2, 2)) * Math.cos(skewangle);
+        const calcheight = Math.sqrt(Math.pow(tile_width / 2, 2) + Math.pow(tile_length / 2, 2)) * Math.cos(skewangle2);
+        const unbalance = tree_width - tree_length;
+        var unbalance_vertical_move  = - tile_length * unbalance / 4;
         const interact_div_styles = {
             position: 'absolute',
+            zIndex: 4,
             width: calcwidth,
             height: calcheight,
             backgroundColor: 'green',
-            transform: `skew(-${skewangle2}rad, ${skewangle}rad) translate(${this.state.horizontalDisplacement + calcwidth/2}px, ${-calcheight/2 + 5}px)`,
-            opacity: 0.5,
-            zIndex: 4,
-        }
+            opacity: 0,
+            transform: `translate(${calcwidth/2 + unbalance*calcwidth/2}px, ${-calcheight/2 - tile_length * (tree_length - 2) / 2 + unbalance_vertical_move}px) skew(-${skewangle2}rad, ${skewangle}rad) scale(${tree_length}, ${tree_width})`,
+        };
         return (
             <Fragment>
                 <div style={interact_div_styles} onClick={() => this.props.treeClick()} />
