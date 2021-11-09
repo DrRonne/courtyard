@@ -101,7 +101,7 @@ export default class Market extends Component {
             };
             const section_styles = {
                 position: 'absolute',
-                top: 80,
+                top: 100,
                 left: '50%',
                 transform: 'translate(-50%, 0%)',
                 zIndex: 2,

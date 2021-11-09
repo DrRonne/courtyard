@@ -1,40 +1,19 @@
 import React, { Component } from 'react'
-import left from '../../assets/market/section_title_bg_left.png'
-import middle from '../../assets/market/section_title_bg_middle.png'
-import right from '../../assets/market/section_title_bg_right.png'
 
 export default class TreesButton extends Component {
     render() {
-        const middle_size = 45;
         const div_styles = {
             position: 'relative',
             margin: 5,
         };
-        const left_styles = {
-            position: 'absolute',
-            zIndex: 1,
-        };
-        const middle_styles = {
-            position: 'absolute',
-            left: 10,
-            width: middle_size,
-            height: 50,
-            zIndex: 1,
-        };
-        const right_styles = {
-            position: 'absolute',
-            left: 10 + middle_size,
-            zIndex: 1,
-        }
-        const fill_styles = {
-            width: 20 + middle_size,
-            height: 50,
-            zIndex: 1,
-        }
         const text_styles = {
-            position: 'absolute',
+            position: 'relative',
             fontSize: 25,
             color: '#513d1a',
+            backgroundColor: '#d9cda7',
+            border: '3px solid #b4a07d',
+            borderRadius: 10,
+            padding: '4px 4px 4px 4px',
             textAlign: 'center',
             zIndex: 2,
             left: '50%',
@@ -43,11 +22,7 @@ export default class TreesButton extends Component {
         }
         return (
             <div style={div_styles} >
-                <img src={left} style={left_styles} alt="" />
-                <img src={middle} style={middle_styles} alt="" onClick={() => this.props.onTreesButtonClick()} />
-                <img src={right} style={right_styles} alt="" />
-                <div style={fill_styles} />
-                <div style={text_styles}><strong>Trees</strong></div>
+                <div style={text_styles} onClick={() => this.props.onTreesButtonClick()} ><strong>Trees</strong></div>
             </div>
         )
     }
